@@ -3,10 +3,14 @@ package main;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        String csvFile = "/Users/mundosanchez/GitHub/settle-ease/settle-ease/src/test/resources/TR123325.csv";
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the file path: ");
+        String csvFile = scanner.nextLine();
+        scanner.close();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(csvFile))) {
             // Read the header row
@@ -23,12 +27,12 @@ public class Main {
             // Process each row of data
             String line;
             while ((line = reader.readLine()) != null) {
-            	line = line.trim(); // Trim leading and trailing whitespace
+                line = line.trim(); // Trim leading and trailing whitespace
                 if (line.isEmpty()) {
                     continue; // Skip empty rows
                 }
-            	
-            	String[] rowData = splitRowData(line);
+
+                String[] rowData = splitRowData(line);
                 if (rowData.length >= 3) { // Check if the array has at least 3 elements
                     String card = rowData[cardIndex];
                     String trxDate = rowData[trxDateIndex];
@@ -37,7 +41,10 @@ public class Main {
                     String invoiceAmount = rowData[invoiceAmountIndex];
 
                     // Process the extracted data (e.g., reformatting, calculations, etc.)
-                    // Replace the following print statement with your desired processing logic
+                    Report fuelReport = new FuelReport();
+                    fuelReport.process();
+                    fuelReport.saveReport();
+                    System.out.println("Report ID: " + fuelReport.getReportId());
                     System.out.println("Fuel Card Number: " + card +
                             ", Transaction Date: " + trxDate +
                             ", City: " + city +
@@ -75,5 +82,3 @@ public class Main {
         return rowData;
     }
 }
-
-

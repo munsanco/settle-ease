@@ -1,21 +1,21 @@
 package main;
 
-import java.util.Date;
 import java.util.UUID;
 
-
 abstract class Report {
-    // abstract method
+    protected UUID reportId;
+
+    public Report() {
+        reportId = UUID.randomUUID();
+    }
+
     public abstract void process();
-}
 
-abstract class PayrollDeduction {
-    // abstract method
-    public abstract void processRow();
-}
+    public void saveReport() {
+        System.out.println("Saving Report...");
+    }
 
-class FuelDeduction extends PayrollDeduction {
-    public void processRow() {
-        System.out.println("Processing Fuel Deduction Row...");
+    public UUID getReportId() {
+        return reportId;
     }
 }
