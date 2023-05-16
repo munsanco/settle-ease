@@ -3,11 +3,7 @@ package main;
 import java.util.UUID;
 
 abstract class Report {
-    protected UUID reportId;
-
-    public Report() {
-        reportId = UUID.randomUUID();
-    }
+    protected static UUID reportId = UUID.randomUUID();
 
     public abstract void process();
 

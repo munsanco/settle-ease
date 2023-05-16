@@ -24,6 +24,9 @@ public class Main {
             int stateIndex = findColumnIndex(header, "State");
             int invoiceAmountIndex = findColumnIndex(header, "Invoice Amount");
 
+            Report fuelReport = new FuelReport();
+            fuelReport.process();
+
             // Process each row of data
             String line;
             while ((line = reader.readLine()) != null) {
@@ -41,10 +44,7 @@ public class Main {
                     String invoiceAmount = rowData[invoiceAmountIndex];
 
                     // Process the extracted data (e.g., reformatting, calculations, etc.)
-                    Report fuelReport = new FuelReport();
-                    fuelReport.process();
-                    fuelReport.saveReport();
-                    System.out.println("Report ID: " + fuelReport.getReportId());
+                    ((FuelReport) fuelReport).saveFuelReport(card, trxDate, city, state, invoiceAmount);
                     System.out.println("Fuel Card Number: " + card +
                             ", Transaction Date: " + trxDate +
                             ", City: " + city +
@@ -54,6 +54,9 @@ public class Main {
                     System.out.println("Invalid row data: " + line);
                 }
             }
+
+            fuelReport.saveReport();
+            System.out.println("Report ID: " + fuelReport.getReportId());
         } catch (IOException e) {
             e.printStackTrace();
         }
