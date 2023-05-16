@@ -4,9 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FuelReport extends Report {
+	
+	// Inheritance: FuelReport inherits the properties and methods from Report
+	
     private List<FuelRow> fuelRows;
 
     public FuelReport() {
+    	
+    	// Precondition: method requires non-null values for specified parameters
+    	
         fuelRows = new ArrayList<>();
     }
 
@@ -47,6 +53,8 @@ public class FuelReport extends Report {
         }
 
         @Override
+        // Postcondition: method of FuelRow returns a string representation of FuelRow object included renamed desired output fields
+        
         public String toString() {
             return "Fuel Card Number: " + card +
                     ", Transaction Date: " + trxDate +
