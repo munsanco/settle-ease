@@ -9,7 +9,7 @@ public class FuelReport extends Report {
 	
     private List<FuelRow> fuelRows;
 
-    public FuelReport() {
+	public FuelReport() {
     	
     	// Precondition: method requires non-null values for specified parameters
     	
@@ -37,31 +37,12 @@ public class FuelReport extends Report {
         // Perform any additional processing specific to FuelReport
     }
 
-    private class FuelRow {
-        private String card;
-        private String trxDate;
-        private String city;
-        private String state;
-        private String invoiceAmount;
+    public List<FuelRow> getFuelRows() {
+		return fuelRows;
+	}
 
-        public FuelRow(String card, String trxDate, String city, String state, String invoiceAmount) {
-            this.card = card;
-            this.trxDate = trxDate;
-            this.city = city;
-            this.state = state;
-            this.invoiceAmount = invoiceAmount;
-        }
-
-        @Override
-        // Postcondition: method of FuelRow returns a string representation of FuelRow object included renamed desired output fields
-        
-        public String toString() {
-            return "Fuel Card Number: " + card +
-                    ", Transaction Date: " + trxDate +
-                    ", City: " + city +
-                    ", State: " + state +
-                    ", Invoice Amount: " + invoiceAmount;
-        }
-    }
+	public void setFuelRows(List<FuelRow> fuelRows) {
+		this.fuelRows = fuelRows;
+	}
 }
 

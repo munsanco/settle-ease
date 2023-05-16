@@ -1,4 +1,5 @@
-abstract class PayrollDeduction {
+package main;
+public abstract class PayrollDeduction {
     public abstract void processRow();
 }
 
