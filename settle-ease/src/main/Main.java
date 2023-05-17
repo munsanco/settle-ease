@@ -33,6 +33,7 @@ public class Main {
 
             //Postcondition: the headerLine variable holds the first line in the CSV to be reformatted with desired renaming
             // Polymorphism: FuelReport object is assigned to Report as FuelReport can now call on polymorphic methods 
+            // Upcasting: creating a new instance of FuelReport
             
             Report fuelReport = new FuelReport();
             fuelReport.process();
@@ -55,7 +56,7 @@ public class Main {
                     String state = rowData[stateIndex];
                     String invoiceAmount = rowData[invoiceAmountIndex];
 
-                    // Process the extracted data (e.g., reformatting, calculations, etc.)
+            // Process the extracted data (e.g., reformatting, calculations, etc.)      
                     ((FuelReport) fuelReport).saveFuelReport(card, trxDate, city, state, invoiceAmount);
                     System.out.println("Fuel Card Number: " + card +
                             ", Transaction Date: " + trxDate +
