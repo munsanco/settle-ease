@@ -10,46 +10,50 @@ We are creating a Java microservice for a trucking company called "SettleEase". 
 - [Installation](#installation)
 - [Usage](#usage)
 - [Contributing](#contributing)
-- [License](#license)
-- [Credits](#credits)
-- [Contact](#contact)
 
 
 ## <a id="current-week-milestones"></a>Current Week Milestones
 
-As SettleEase is uniquely tailored to be a project that is built up each week, this section highlights the key accomplishments for the week. This week our core demonstration includes processing contents of a CSV file and 
+As SettleEase is uniquely tailored to be a project that is built up each week, this section highlights the key accomplishments for the week. 
+
+This week our core demonstration includes processing contents of a CSV file by processing each row of data and saving it to a report. Through our developments this week we highlighted the use of key programming concepts such as abstract classes, inheritance, polymorphism, and upcasting.
 
 
 ## <a id="features"></a>Features
 
-List and describe the main features of your project. Highlight the functionalities that make it unique or useful.
+| Feature | Description |
+|---------|-------------|
+| User Input of File Path | User is prompted to enter in a local file path to begin the SettleEase parsing of data |
+| Report Creation | Once valid file is received we save the file to a Report |
+| Data Parsing | We parse the CSV file contents to return specific categories |
+| Column Splitting | We take unstructured data and split data into columns to extract desired categories |
+| Report Saving | We save the row data contents to the Report object |
+| Report ID Confirmation | We ensure that the appropriate Report ID is saved to the report with processed data |
+
 
 
 ## <a id="installation"></a>Installation
 
-Provide instructions on how to install and set up your project. Include any prerequisites, dependencies, or system requirements. Step-by-step instructions or commands can be useful here.
+1. Download code base from Github repository.
+2. You will need to locate your local file path for where the CSV file is saved at. This path will look like this [your local path]/settle-ease/src/test/resources/TR123325.csv
+3. Run program
+4. You will be prompted to enter the file path (refer to step 2).
+5. Once the correct file path is entered, SettleEase will process the CSV contenst and the results will be rendered to the Console with the Report ID.
 
 
 ## <a id="usage"></a>Usage
+Below are the instructions for running this application assuming you have successfully followed the Installation steps:
 
-Explain how to use your project. Provide examples and code snippets to demonstrate the core functionality. Include any important considerations, configuration options, or customization instructions.
+1. Run program with local IDE (Eclipse).
+2. You will be prompted to enter the file path (refer to step 2 of Installation).
+3. Once the correct file path is entered, SettleEase will process the CSV contenst and the results will be rendered to the Console with the Report ID.
+
+Other Important Notes:
+This week we started to implement Junit tests but ran into some Eclipse issues and ultimately these were not used as intended. As we look forward in future weeks we will incorporate better usage of these tests where applicable.
 
 
 ## <a id="contributing"></a>Contributing
 
-Explain how others can contribute to your project. Mention any guidelines, coding standards, or contribution processes you have in place. Provide instructions on how to submit bug reports or feature requests.
+chatGPT played a large role in the development of this code, with the developer playing a "prompt engineer" role. Core requirements required specific programming concepts that chatGPT was not natively familiar with in regard to its direct implementation of this project. Large amounts of refactoring and re-prompting also took place to get desired output.
 
 
-## <a id="license"></a>License
-
-Specify the license under which your project is released. Include the full text of the license or provide a link to it.
-
-
-## <a id="credits"></a>Credits
-
-Acknowledge and thank any individuals, organizations, or resources that have contributed to or inspired your project. You can also mention any external libraries, frameworks, or tools you've used and provide links to their documentation or websites.
-
-
-## <a id="contact"></a>Contact
-
-Provide contact information (e.g., email or social media profiles
