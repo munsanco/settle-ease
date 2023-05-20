@@ -16,6 +16,7 @@ public class Main {
         System.out.println("Enter the file path: ");
         String csvFile = scanner.nextLine();
         scanner.close();
+        
 
         try (BufferedReader reader = new BufferedReader(new FileReader(csvFile))) {
            
@@ -75,9 +76,12 @@ public class Main {
             // Postcondition: Each non-empty row of data is processed from the CSV file and saved
             
             System.out.println("Report ID: " + fuelReport.getReportId());
-        } catch (IOException e) {
-            e.printStackTrace();
+            
+        } catch (IOException csvError) {
+        	System.out.println("Processing failed. An error occurred while reading the CSV file.");
+        	csvError.printStackTrace();
         }
+        
     }
 
     private static int findColumnIndex(String[] header, String columnName) {
