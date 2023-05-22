@@ -1,3 +1,6 @@
+
+/*
+
 package test;
 
 import org.junit.runner.JUnitCore;
@@ -26,3 +29,5 @@ public class Main {
 
 		 }
 }
+
+*/
