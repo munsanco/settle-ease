@@ -82,24 +82,33 @@ public class Main {
             if (reader != null) {
                 try {
                     reader.close();
+           
+            // Postcondition: The BufferedReader is successfully closed
                 } catch (IOException closeError) {
                     System.out.println("An error occurred while closing the CSV file.");
                     closeError.printStackTrace();
+           // Postcondition: An error occurred while closing the CSV file
                 }
             }
         }
 
+        // Precondition: object used below should not be null
         // Save the report if fuelReport is not null
         if (fuelReport != null) {
             fuelReport.saveReport();
+       // Postcondition: The report is successfully saved
             fuelRows = fuelReport.getFuelRows();
+       // Postcondition: The fuel rows are retrieved from the report
         }
 
         // Compare the processed fuel rows with the saved fuel rows
         if (fuelRows != null && fuelRows.equals(fuelReport.getFuelRows())) {
             System.out.println("Processed fuel rows match the saved fuel rows.");
+            
+       // Postcondition: The processed fuel rows match the saved fuel rows
         } else if (fuelRows != null) {
             System.out.println("Processed fuel rows do not match the saved fuel rows.");
+       // Postcondition: The processed fuel rows do not match the saved fuel rows
         }
     }
 
