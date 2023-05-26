@@ -3,17 +3,13 @@ package main;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FuelReport extends Report {
-	
-	// Inheritance: FuelReport inherits the properties and methods from Report
-	
+public class FuelReport extends Report<List<FuelRow>> {
+
     private List<FuelRow> fuelRows;
 
-	public FuelReport() {
-    	
-    	// Precondition: method requires non-null values for specified parameters
-    	
-        fuelRows = new ArrayList<>();
+    public FuelReport() {
+        super(new ArrayList<>());
+        fuelRows = getReportData();
     }
 
     public void saveFuelReport(String card, String trxDate, String city, String state, String invoiceAmount) {
@@ -21,6 +17,7 @@ public class FuelReport extends Report {
         fuelRows.add(fuelRow);
     }
 
+    @Override
     public void saveReport() {
         System.out.println("Saving Fuel Report...");
         System.out.println("Report ID: " + getReportId());
@@ -38,11 +35,10 @@ public class FuelReport extends Report {
     }
 
     public List<FuelRow> getFuelRows() {
-		return fuelRows;
-	}
+        return fuelRows;
+    }
 
-	public void setFuelRows(List<FuelRow> fuelRows) {
-		this.fuelRows = fuelRows;
-	}
+    public void setFuelRows(List<FuelRow> fuelRows) {
+        this.fuelRows = fuelRows;
+    }
 }
-
