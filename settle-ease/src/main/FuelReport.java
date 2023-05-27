@@ -17,6 +17,10 @@ public class FuelReport extends Report<List<FuelRow>> {
         fuelRows.add(fuelRow);
     }
 
+    public void saveFuelReport(FuelRow fuelRow) {
+        fuelRows.add(fuelRow);
+    }
+
     @Override
     public void saveReport() {
         System.out.println("Saving Fuel Report...");

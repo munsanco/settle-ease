@@ -16,7 +16,6 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter the file path: ");
         String csvFile = scanner.nextLine();
-        scanner.close();
 
         BufferedReader reader = null;
         FuelReport fuelReport = null;
@@ -82,12 +81,9 @@ public class Main {
             if (reader != null) {
                 try {
                     reader.close();
-           
-            // Postcondition: The BufferedReader is successfully closed
                 } catch (IOException closeError) {
                     System.out.println("An error occurred while closing the CSV file.");
                     closeError.printStackTrace();
-           // Postcondition: An error occurred while closing the CSV file
                 }
             }
         }
@@ -96,20 +92,32 @@ public class Main {
         // Save the report if fuelReport is not null
         if (fuelReport != null) {
             fuelReport.saveReport();
-       // Postcondition: The report is successfully saved
             fuelRows = fuelReport.getFuelRows();
-       // Postcondition: The fuel rows are retrieved from the report
         }
 
         // Compare the processed fuel rows with the saved fuel rows
         if (fuelRows != null && fuelRows.equals(fuelReport.getFuelRows())) {
             System.out.println("Processed fuel rows match the saved fuel rows.");
-            
-       // Postcondition: The processed fuel rows match the saved fuel rows
         } else if (fuelRows != null) {
             System.out.println("Processed fuel rows do not match the saved fuel rows.");
-       // Postcondition: The processed fuel rows do not match the saved fuel rows
         }
+
+        // Prompt the user to enter a fuel card number
+        System.out.println("Enter a fuel card number:");
+        String fuelCardNumber = scanner.nextLine();
+
+        // Calculate the total invoice amount for the entered fuel card number
+        double totalInvoiceAmount = 0.0;
+        for (FuelRow fuelRow : fuelRows) {
+            if (fuelRow.getCard().equals(fuelCardNumber)) {
+                totalInvoiceAmount += Double.parseDouble(fuelRow.getInvoiceAmount());
+            }
+        }
+
+        // Display the total invoice amount
+        System.out.printf("Total Invoice Amount for fuel card %s: $%.2f%n", fuelCardNumber, totalInvoiceAmount);
+
+        scanner.close();
     }
 
     private static int findColumnIndex(String[] header, String columnName) {
@@ -141,4 +149,3 @@ public class Main {
         return rowData;
     }
 }
-
