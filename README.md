@@ -7,7 +7,7 @@ SettleEase is a microservice designed to automate payroll fuel deductions for co
 
 - [Current Week Milestones](#current-week-milestones)
 - [Features](#features)
-- [Installation](#installation)
+- [Installation](#installation) **NEW**
 - [Usage](#usage)
 - [Contributing](#contributing)
 
@@ -31,6 +31,7 @@ This week our core deliverables conists of tightening prior work done (project d
 | Report Saving | We save the row data contents to the Report object |
 | Report ID Confirmation | We ensure that the appropriate Report ID is saved to the report with processed data |
 | Verification Match Search | We run a verification search to see if the processed results match the saved results and provide user feedback on the results |
+| User Input of Fuel Card No. | User is prompted to enter in fuel card number and SettlEase will return the fuel card number total if valid |
 
 
 
@@ -41,6 +42,10 @@ This week our core deliverables conists of tightening prior work done (project d
 3. Run program
 4. You will be prompted to enter the file path (refer to step 2).
 5. Once the correct file path is entered, SettleEase will process the CSV contenst and the results will be rendered to the Console with the Report ID.
+6. SettleEase 
+7. Once processed, SettleEase will prompt you to enter in a Fuel Card number.
+    a. A valid Fuel Card number to use for testing is "012".
+    b. an invalid Fuel Card number to use for testing is "069".
 
 
 ## <a id="usage"></a>Usage
@@ -49,6 +54,9 @@ Below are the instructions for running this application assuming you have succes
 1. Run program with local IDE (Eclipse).
 2. You will be prompted to enter the file path (refer to step 2 of Installation).
 3. Once the correct file path is entered, SettleEase will process the CSV contenst and the results will be rendered to the Console with the Report ID.
+4. SettleEase shall prompt you to enter in a Fuel Card number.
+5. If valid, SettleEase shall return to you the total spend for specified Fuel Card number.
+6. If invalid, SettleEase will let you know an error has occured.
 
 
 ## <a id="contributing"></a>Contributing
