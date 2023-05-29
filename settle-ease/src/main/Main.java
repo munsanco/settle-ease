@@ -9,12 +9,10 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
 
-        // Precondition: The user provides a valid file path as input
-        // Important Note: Please update the file path below to match the location of the CSV file on your system
-        // For example, mine is /Users/mundosanchez/GitHub/settle-ease/settle-ease/src/test/resources/TR123325.csv
-
-        Scanner scanner = new Scanner(System.in);
-        try {
+        try (Scanner scanner = new Scanner(System.in)) {
+            // Precondition: The user provides a valid file path as input
+            // Important Note: Please update the file path below to match the location of the CSV file on your system
+            // For example, mine is /Users/mundosanchez/GitHub/settle-ease/settle-ease/src/test/resources/TR123325.csv
             System.out.println("Enter the file path: ");
             String csvFile = scanner.nextLine();
 
@@ -111,20 +109,17 @@ public class Main {
                 }
             }
 
+            // Precondition: fuelCardNumber is not null
+
             // Display the total invoice amount or throw an IOException if the fuel card number does not exist
             if (fuelCardExists) {
                 System.out.printf("Total Invoice Amount for fuel card %s: $%.2f%n", fuelCardNumber, totalInvoiceAmount);
             } else {
                 throw new IOException("Fuel card number does not exist in the file.");
+                // Postcondition: Displays the total invoice amount for the fuel card number if it exists in the file
             }
-
         } catch (IOException e) {
             System.out.println("Processing failed. " + e.getMessage());
-        } finally {
-            // Close the Scanner in the finally block
-            if (scanner != null) {
-                scanner.close();
-            }
         }
     }
 
@@ -157,3 +152,4 @@ public class Main {
         return rowData;
     }
 }
+
