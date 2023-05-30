@@ -16,7 +16,7 @@ SettleEase is a microservice designed to automate payroll fuel deductions for co
 
 As SettleEase is uniquely tailored to be a project that is built up each week, this section highlights the key accomplishments for the week: 
 
-This week our core deliverables conists of tightening prior work done (project descriptions, class diagram, sequence diagram), the inclusion of exception handling, the successful incorporation of Junit tests, and adding a new feature related to verification matching of results.
+This week our core deliverables focuses on implementing the use of a Generic class for better code reusability. A new feature is also introduced that prompts the user to enter in a fuel card number, with SettleEase returning the total for that fuel card number. 
 
 
 ## <a id="features"></a>Features
@@ -43,9 +43,7 @@ This week our core deliverables conists of tightening prior work done (project d
 4. You will be prompted to enter the file path (refer to step 2).
 5. Once the correct file path is entered, SettleEase will process the CSV contenst and the results will be rendered to the Console with the Report ID.
 6. SettleEase 
-7. Once processed, SettleEase will prompt you to enter in a Fuel Card number.
-    a. A valid Fuel Card number to use for testing is "012".
-    b. an invalid Fuel Card number to use for testing is "069".
+7. Once processed, SettleEase will prompt you to enter in a Fuel Card number. A valid Fuel Card number to use for testing is "012". An invalid Fuel Card number to use for testing is "069".
 
 
 ## <a id="usage"></a>Usage
