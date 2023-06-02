@@ -2,7 +2,7 @@ package main;
 
 public class FuelRow {
     private String card;
-	private String trxDate;
+    private String trxDate;
     private String city;
     private String state;
     private String invoiceAmount;
@@ -15,54 +15,54 @@ public class FuelRow {
         this.invoiceAmount = invoiceAmount;
     }
 
-    @Override
-    // Postcondition: method of FuelRow returns a string representation of FuelRow object included renamed desired output fields
-    
-    public String toString() {
-        return "Fuel Card Number: " + card +
-                ", Transaction Date: " + trxDate +
-                ", City: " + city +
-                ", State: " + state +
-                ", Invoice Amount: " + invoiceAmount;
-    }
-    
     public String getCard() {
-		return card;
-	}
+        return card;
+    }
 
-	public void setCard(String card) {
-		this.card = card;
-	}
+    public void setCard(String card) {
+        this.card = card;
+    }
 
-	public String getTrxDate() {
-		return trxDate;
-	}
+    public String getTrxDate() {
+        return trxDate;
+    }
 
-	public void setTrxDate(String trxDate) {
-		this.trxDate = trxDate;
-	}
+    public void setTrxDate(String trxDate) {
+        this.trxDate = trxDate;
+    }
 
-	public String getCity() {
-		return city;
-	}
+    public String getCity() {
+        return city;
+    }
 
-	public void setCity(String city) {
-		this.city = city;
-	}
+    public void setCity(String city) {
+        this.city = city;
+    }
 
-	public String getState() {
-		return state;
-	}
+    public String getState() {
+        return state;
+    }
 
-	public void setState(String state) {
-		this.state = state;
-	}
+    public void setState(String state) {
+        this.state = state;
+    }
 
-	public String getInvoiceAmount() {
-		return invoiceAmount;
-	}
+    public String getInvoiceAmount() {
+        return invoiceAmount;
+    }
 
-	public void setInvoiceAmount(String invoiceAmount) {
-		this.invoiceAmount = invoiceAmount;
-	}
+    public void setInvoiceAmount(String invoiceAmount) {
+        this.invoiceAmount = invoiceAmount;
+    }
+
+    @Override
+    public String toString() {
+        return "FuelRow{" +
+                "card='" + card + '\'' +
+                ", trxDate='" + trxDate + '\'' +
+                ", city='" + city + '\'' +
+                ", state='" + state + '\'' +
+                ", invoiceAmount='" + invoiceAmount + '\'' +
+                '}';
+    }
 }

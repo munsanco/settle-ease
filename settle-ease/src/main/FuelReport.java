@@ -8,7 +8,7 @@ public class FuelReport extends Report<List<FuelRow>> {
     private List<FuelRow> fuelRows;
 
     public FuelReport() {
-    	// Precondition: The superclass constructor initializes the reportData with an empty ArrayList
+        // Precondition: The superclass constructor initializes the reportData with an empty ArrayList
         super(new ArrayList<>());
         fuelRows = getReportData();
         // Postcondition: The fuelRows reference is set to the reportData instance
@@ -17,11 +17,11 @@ public class FuelReport extends Report<List<FuelRow>> {
     public void saveFuelReport(String card, String trxDate, String city, String state, String invoiceAmount) {
         FuelRow fuelRow = new FuelRow(card, trxDate, city, state, invoiceAmount);
         fuelRows.add(fuelRow);
-       // Postcondition: The fuelRow is added to the fuelRows list
+        // Postcondition: The fuelRow is added to the fuelRows list
     }
 
     public void saveFuelReport(FuelRow fuelRow) {
-    	// Precondition: The fuelRow object is not null
+        // Precondition: The fuelRow object is not null
         fuelRows.add(fuelRow);
         // Postcondition: The fuelRow is added to the fuelRows list
     }
@@ -33,7 +33,7 @@ public class FuelReport extends Report<List<FuelRow>> {
         System.out.println("Fuel Report Rows: ");
         for (FuelRow fuelRow : fuelRows) {
             System.out.println(fuelRow);
-         // Postcondition: The fuel report is saved and displayed
+            // Postcondition: The fuel report is saved and displayed
         }
     }
 
@@ -50,7 +50,7 @@ public class FuelReport extends Report<List<FuelRow>> {
     }
 
     public void setFuelRows(List<FuelRow> fuelRows) {
-    	// Precondition: The fuelRows list is not null
+        // Precondition: The fuelRows list is not null
         this.fuelRows = fuelRows;
         // Postcondition: The fuelRows list is set
     }
