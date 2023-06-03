@@ -2,28 +2,27 @@ package main;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.io.Serializable;
 
-public class FuelReport extends Report<List<FuelRow>> {
+public class FuelReport extends Report<List<FuelRow>> implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private List<FuelRow> fuelRows;
 
     public FuelReport() {
-        // Precondition: The superclass constructor initializes the reportData with an empty ArrayList
         super(new ArrayList<>());
         fuelRows = getReportData();
-        // Postcondition: The fuelRows reference is set to the reportData instance
     }
 
     public void saveFuelReport(String card, String trxDate, String city, String state, String invoiceAmount) {
         FuelRow fuelRow = new FuelRow(card, trxDate, city, state, invoiceAmount);
         fuelRows.add(fuelRow);
-        // Postcondition: The fuelRow is added to the fuelRows list
     }
 
     public void saveFuelReport(FuelRow fuelRow) {
-        // Precondition: The fuelRow object is not null
         fuelRows.add(fuelRow);
-        // Postcondition: The fuelRow is added to the fuelRows list
     }
 
     @Override
@@ -33,7 +32,6 @@ public class FuelReport extends Report<List<FuelRow>> {
         System.out.println("Fuel Report Rows: ");
         for (FuelRow fuelRow : fuelRows) {
             System.out.println(fuelRow);
-            // Postcondition: The fuel report is saved and displayed
         }
     }
 
@@ -41,8 +39,6 @@ public class FuelReport extends Report<List<FuelRow>> {
     public void process() {
         System.out.println("Processing Fuel Report...");
         System.out.println("Report ID: " + getReportId());
-        // Perform any additional processing specific to FuelReport
-        // Postcondition: The fuel report processing is completed
     }
 
     public List<FuelRow> getFuelRows() {
@@ -50,8 +46,24 @@ public class FuelReport extends Report<List<FuelRow>> {
     }
 
     public void setFuelRows(List<FuelRow> fuelRows) {
-        // Precondition: The fuelRows list is not null
         this.fuelRows = fuelRows;
-        // Postcondition: The fuelRows list is set
+    }
+
+    public Stream<FuelRow> getFuelRowStream() {
+        return fuelRows.stream();
+    }
+
+    public double calculateTotalInvoiceAmount(String fuelCardNumber) {
+        return getFuelRowStream()
+                .filter(fuelRow -> fuelRow.getCard().equals(fuelCardNumber))
+                .mapToDouble(fuelRow -> Double.parseDouble(fuelRow.getInvoiceAmount()))
+                .sum();
+    }
+
+    public List<FuelRow> filterByState(String state) {
+        return getFuelRowStream()
+                .filter(fuelRow -> fuelRow.getState().equalsIgnoreCase(state))
+                .collect(Collectors.toList());
     }
 }
+
