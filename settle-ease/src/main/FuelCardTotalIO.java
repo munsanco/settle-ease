@@ -1,73 +1,62 @@
 package main;
-import java.util.ArrayList;
-import java.util.List;
 import java.io.*;
 
 public class FuelCardTotalIO {
     public static void writeFuelReportToFile(FuelReport fuelReport, String filePath) throws IOException {
         try (FileOutputStream fileOutputStream = new FileOutputStream(filePath);
-             DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream)) {
-
-            List<FuelRow> fuelRows = fuelReport.getFuelRows();
-            int size = fuelRows.size();
-
-            // Write the size of the fuelRows list
-            dataOutputStream.writeInt(size);
-
-            // Write each FuelRow object
-            for (FuelRow fuelRow : fuelRows) {
-                // Write the card string
-                dataOutputStream.writeUTF(fuelRow.getCard());
-
-                // Write the trxDate string
-                dataOutputStream.writeUTF(fuelRow.getTrxDate());
-
-                // Write the city string
-                dataOutputStream.writeUTF(fuelRow.getCity());
-
-                // Write the state string
-                dataOutputStream.writeUTF(fuelRow.getState());
-
-                // Write the invoiceAmount string
-                dataOutputStream.writeUTF(fuelRow.getInvoiceAmount());
-            }
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
+            objectOutputStream.writeObject(fuelReport);
         }
     }
 
-    public static FuelReport readFuelReportFromFile(String filePath) throws IOException {
+    public static FuelReport readFuelReportFromFile(String filePath) throws IOException, ClassNotFoundException {
+        try (FileInputStream fileInputStream = new FileInputStream(filePath);
+             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
+            return (FuelReport) objectInputStream.readObject();
+        }
+    }
+
+    public static void writeBytesToFile(byte[] bytes, String filePath) throws IOException {
+        try (FileOutputStream fileOutputStream = new FileOutputStream(filePath)) {
+            fileOutputStream.write(bytes);
+        }
+    }
+
+    public static byte[] readBytesFromFile(String filePath) throws IOException {
+        try (FileInputStream fileInputStream = new FileInputStream(filePath);
+             ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = fileInputStream.read(buffer)) != -1) {
+                byteOutputStream.write(buffer, 0, bytesRead);
+            }
+            return byteOutputStream.toByteArray();
+        }
+    }
+
+    public static void writePrimitiveTypesAndStringsToFile(String filePath, int intValue, double doubleValue, boolean booleanValue, String stringValue) throws IOException {
+        try (FileOutputStream fileOutputStream = new FileOutputStream(filePath);
+             DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream)) {
+            dataOutputStream.writeInt(intValue);
+            dataOutputStream.writeDouble(doubleValue);
+            dataOutputStream.writeBoolean(booleanValue);
+            dataOutputStream.writeUTF(stringValue);
+        }
+    }
+
+    public static void readPrimitiveTypesAndStringsFromFile(String filePath) throws IOException {
         try (FileInputStream fileInputStream = new FileInputStream(filePath);
              DataInputStream dataInputStream = new DataInputStream(fileInputStream)) {
+            int intValue = dataInputStream.readInt();
+            double doubleValue = dataInputStream.readDouble();
+            boolean booleanValue = dataInputStream.readBoolean();
+            String stringValue = dataInputStream.readUTF();
 
-            List<FuelRow> fuelRows = new ArrayList<>();
-
-            // Read the size of the fuelRows list
-            int size = dataInputStream.readInt();
-
-            // Read each FuelRow object
-            for (int i = 0; i < size; i++) {
-                // Read the card string
-                String card = dataInputStream.readUTF();
-
-                // Read the trxDate string
-                String trxDate = dataInputStream.readUTF();
-
-                // Read the city string
-                String city = dataInputStream.readUTF();
-
-                // Read the state string
-                String state = dataInputStream.readUTF();
-
-                // Read the invoiceAmount string
-                String invoiceAmount = dataInputStream.readUTF();
-
-                // Create a new FuelRow object and add it to the list
-                FuelRow fuelRow = new FuelRow(card, trxDate, city, state, invoiceAmount);
-                fuelRows.add(fuelRow);
-            }
-
-            FuelReport fuelReport = new FuelReport();
-            fuelReport.setFuelRows(fuelRows);
-            return fuelReport;
+            System.out.println("Int value: " + intValue);
+            System.out.println("Double value: " + doubleValue);
+            System.out.println("Boolean value: " + booleanValue);
+            System.out.println("String value: " + stringValue);
         }
     }
 }
+

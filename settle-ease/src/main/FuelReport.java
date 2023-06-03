@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.io.Serializable;
+import java.util.function.Predicate;
 
 public class FuelReport extends Report<List<FuelRow>> implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -53,9 +54,12 @@ public class FuelReport extends Report<List<FuelRow>> implements Serializable {
         return fuelRows.stream();
     }
 
-    public double calculateTotalInvoiceAmount(String fuelCardNumber) {
+    public double calculateTotalFuelSpent(String fuelCardNumber, String state) {
+        Predicate<FuelRow> filter = fuelRow ->
+                fuelRow.getCard().equals(fuelCardNumber) && fuelRow.getState().equalsIgnoreCase(state);
+
         return getFuelRowStream()
-                .filter(fuelRow -> fuelRow.getCard().equals(fuelCardNumber))
+                .filter(filter)
                 .mapToDouble(fuelRow -> Double.parseDouble(fuelRow.getInvoiceAmount()))
                 .sum();
     }
@@ -64,6 +68,13 @@ public class FuelReport extends Report<List<FuelRow>> implements Serializable {
         return getFuelRowStream()
                 .filter(fuelRow -> fuelRow.getState().equalsIgnoreCase(state))
                 .collect(Collectors.toList());
+    }
+
+    public void processFuelRows(Predicate<FuelRow> filter) {
+        System.out.println("Processing Fuel Report Rows...");
+        getFuelRowStream()
+                .filter(filter)
+                .forEach(System.out::println);
     }
 }
 
