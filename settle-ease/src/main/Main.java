@@ -3,123 +3,135 @@ package main;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
-
         try (Scanner scanner = new Scanner(System.in)) {
-            // Precondition: The user provides a valid file path as input
-            // Important Note: Please update the file path below to match the location of the CSV file on your system
-            // For example, mine is /Users/mundosanchez/GitHub/settle-ease/settle-ease/src/test/resources/TR123325.csv
-            System.out.println("Enter the file path: ");
-            String csvFile = scanner.nextLine();
-
-            BufferedReader reader = null;
+            String csvFile = null;
             FuelReport fuelReport = null;
-            List<FuelRow> fuelRows = null;
+            BufferedReader reader = null;
 
-            try {
-                reader = new BufferedReader(new FileReader(csvFile));
+            while (csvFile == null) {
+                // Precondition: The user provides a valid file path as input
+                // Important Note: Please update the file path below to match the location of the CSV file on your system
+                // For example, mine is /Users/mundosanchez/GitHub/settle-ease/settle-ease/src/test/resources/TR123325.csv
+                System.out.println("Enter the file path: ");
+                csvFile = scanner.nextLine();
 
-                // Precondition: the file path should contain a valid file from input
-                // Read the header row and split out columns to handle the original CSV formatting
-                String headerLine = reader.readLine();
-                String[] header = headerLine.split("\\|");
+                try {
+                    reader = new BufferedReader(new FileReader(csvFile));
 
-                // Find the indices of the desired columns
-                int cardIndex = findColumnIndex(header, "Card");
-                int trxDateIndex = findColumnIndex(header, "Trx Date");
-                int cityIndex = findColumnIndex(header, "City");
-                int stateIndex = findColumnIndex(header, "State");
-                int invoiceAmountIndex = findColumnIndex(header, "Invoice Amount");
+                    // Precondition: the file path should contain a valid file from input
+                    // Read the header row and split out columns to handle the original CSV formatting
+                    String headerLine = reader.readLine();
+                    String[] header = headerLine.split("\\|");
 
-                // Postcondition: the headerLine variable holds the first line in the CSV to be reformatted with desired renaming
-                // Polymorphism: FuelReport object is assigned to Report as FuelReport can now call on polymorphic methods
-                // Upcasting: creating a new instance of FuelReport
-                fuelReport = new FuelReport();
-                fuelReport.process();
+                    // Find the indices of the desired columns
+                    int cardIndex = findColumnIndex(header, "Card");
+                    int trxDateIndex = findColumnIndex(header, "Trx Date");
+                    int cityIndex = findColumnIndex(header, "City");
+                    int stateIndex = findColumnIndex(header, "State");
+                    int invoiceAmountIndex = findColumnIndex(header, "Invoice Amount");
 
-                // Precondition: the index variables should contain valid column indexes based on the header
+                    // Postcondition: the headerLine variable holds the first line in the CSV to be reformatted with desired renaming
+                    // Polymorphism: FuelReport object is assigned to Report as FuelReport can now call on polymorphic methods
+                    // Upcasting: creating a new instance of FuelReport
+                    fuelReport = new FuelReport();
+                    fuelReport.process();
 
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    line = line.trim(); // Trim leading and trailing whitespace
-                    if (line.isEmpty()) {
-                        continue; // Skip empty rows
+                    // Precondition: the index variables should contain valid column indexes based on the header
+
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        line = line.trim(); // Trim leading and trailing whitespace
+                        if (line.isEmpty()) {
+                            continue; // Skip empty rows
+                        }
+
+                        String[] rowData = splitRowData(line);
+                        if (rowData.length >= 3) { // Check if the array has at least 3 elements for error handling
+                            String card = rowData[cardIndex];
+                            String trxDate = rowData[trxDateIndex];
+                            String city = rowData[cityIndex];
+                            String state = rowData[stateIndex];
+                            String invoiceAmount = rowData[invoiceAmountIndex];
+
+                            // Process the extracted data (e.g., reformatting, calculations, etc.)
+                            fuelReport.saveFuelReport(card, trxDate, city, state, invoiceAmount);
+                            System.out.println("Fuel Card Number: " + card +
+                                    ", Transaction Date: " + trxDate +
+                                    ", City: " + city +
+                                    ", State: " + state +
+                                    ", Invoice Amount: " + invoiceAmount);
+                        } else {
+                            System.out.println("Invalid row data: " + line);
+                        }
                     }
 
-                    String[] rowData = splitRowData(line);
-                    if (rowData.length >= 3) { // Check if the array has at least 3 elements for error handling
-                        String card = rowData[cardIndex];
-                        String trxDate = rowData[trxDateIndex];
-                        String city = rowData[cityIndex];
-                        String state = rowData[stateIndex];
-                        String invoiceAmount = rowData[invoiceAmountIndex];
+                    // Postcondition: Each non-empty row of data is processed from the CSV file
+                    break;
+                } catch (IOException csvError) {
+                    System.out.println("Processing failed. An error occurred while reading the CSV file.");
+                    csvError.printStackTrace();
+                } finally {
+                    // Close the BufferedReader in the finally block
+                    if (reader != null) {
+                        try {
+                            reader.close();
+                        } catch (IOException closeError) {
+                            System.out.println("An error occurred while closing the CSV file.");
+                            closeError.printStackTrace();
+                        }
+                    }
+                }
+            }
 
-                        // Process the extracted data (e.g., reformatting, calculations, etc.)
-                        fuelReport.saveFuelReport(card, trxDate, city, state, invoiceAmount);
-                        System.out.println("Fuel Card Number: " + card +
-                                ", Transaction Date: " + trxDate +
-                                ", City: " + city +
-                                ", State: " + state +
-                                ", Invoice Amount: " + invoiceAmount);
+            if (fuelReport == null) {
+                System.out.println("No data to process. Exiting the program.");
+                return;
+            }
+
+            String fuelCardNumber = null;
+            boolean exitProgram = false;
+            while (!exitProgram) {
+                System.out.println("Enter the fuel card number (or 'exit' to quit): ");
+                fuelCardNumber = scanner.nextLine();
+
+                if (fuelCardNumber.equalsIgnoreCase("exit")) {
+                    System.out.println("You have successfully exited the program.");
+                    exitProgram = true;
+                } else {
+                    // Check if the fuel card number exists
+                    boolean cardExists = fuelReport.isValidFuelCard(fuelCardNumber);
+
+                    if (!cardExists) {
+                        System.out.println("This fuel card number does not exist. Please try again with a valid fuel card number.");
                     } else {
-                        System.out.println("Invalid row data: " + line);
+                        // Calculate the total fuel spent by fuel card number and state
+                        Map<String, Double> totalFuelSpentByState = fuelReport.filterByFuelCardNumber(fuelCardNumber).stream()
+                                .collect(Collectors.groupingBy(
+                                        fuelRow -> fuelRow.getCard() + " - " + fuelRow.getState(),
+                                        Collectors.summingDouble(fuelRow -> Double.parseDouble(fuelRow.getInvoiceAmount()))
+                                ));
+
+                        // Output the breakdown of the total fuel spent by fuel card number and state
+                        System.out.println("Total Fuel Spent Breakdown:");
+                        double overallTotalFuelSpent = 0.0;
+                        for (Map.Entry<String, Double> entry : totalFuelSpentByState.entrySet()) {
+                            String state = entry.getKey();
+                            double totalFuelSpent = entry.getValue();
+                            System.out.printf("%s: $%.2f%n", state, totalFuelSpent);
+                            overallTotalFuelSpent += totalFuelSpent;
+                        }
+
+                        // Output the overall total fuel spent
+                        System.out.printf("Overall Total Fuel Spent: $%.2f%n", overallTotalFuelSpent);
                     }
                 }
-
-                // Postcondition: Each non-empty row of data is processed from the CSV file
-
-            } catch (IOException csvError) {
-                System.out.println("Processing failed. An error occurred while reading the CSV file.");
-                csvError.printStackTrace();
-            } finally {
-                // Close the BufferedReader in the finally block
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (IOException closeError) {
-                        System.out.println("An error occurred while closing the CSV file.");
-                        closeError.printStackTrace();
-                    }
-                }
             }
-
-            // Precondition: object used below should not be null
-            // Save the report if fuelReport is not null
-            if (fuelReport != null) {
-                fuelReport.saveReport();
-                fuelRows = fuelReport.getFuelRows();
-            }
-
-            // Prompt the user to enter a fuel card number
-            System.out.println("Enter a fuel card number:");
-            String fuelCardNumber = scanner.nextLine();
-
-            // Calculate the total invoice amount for the entered fuel card number
-            double totalInvoiceAmount = 0.0;
-            boolean fuelCardExists = false; // Track if the fuel card number exists
-
-            for (FuelRow fuelRow : fuelRows) {
-                if (fuelRow.getCard().equals(fuelCardNumber)) {
-                    fuelCardExists = true; // Set the flag to true if the fuel card number exists
-                    totalInvoiceAmount += Double.parseDouble(fuelRow.getInvoiceAmount());
-                }
-            }
-
-            // Precondition: fuelCardNumber is not null
-
-            // Display the total invoice amount or throw an IOException if the fuel card number does not exist
-            if (fuelCardExists) {
-                System.out.printf("Total Invoice Amount for fuel card %s: $%.2f%n", fuelCardNumber, totalInvoiceAmount);
-            } else {
-                throw new IOException("Fuel card number does not exist in the file.");
-                // Postcondition: Displays the total invoice amount for the fuel card number if it exists in the file
-            }
-        } catch (IOException e) {
-            System.out.println("Processing failed. " + e.getMessage());
         }
     }
 

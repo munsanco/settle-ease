@@ -1,10 +1,10 @@
 package main;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.io.Serializable;
 import java.util.function.Predicate;
 
 public class FuelReport extends Report<List<FuelRow>> implements Serializable {
@@ -64,9 +64,23 @@ public class FuelReport extends Report<List<FuelRow>> implements Serializable {
                 .sum();
     }
 
+    public boolean isValidFuelCard(String fuelCardNumber) {
+        Predicate<FuelRow> filter = fuelRow ->
+                fuelRow.getCard().equals(fuelCardNumber);
+
+        return getFuelRowStream()
+                .anyMatch(filter);
+    }
+
     public List<FuelRow> filterByState(String state) {
         return getFuelRowStream()
                 .filter(fuelRow -> fuelRow.getState().equalsIgnoreCase(state))
+                .collect(Collectors.toList());
+    }
+
+    public List<FuelRow> filterByFuelCardNumber(String fuelCardNumber) {
+        return getFuelRowStream()
+                .filter(fuelRow -> fuelRow.getCard().equals(fuelCardNumber))
                 .collect(Collectors.toList());
     }
 
@@ -77,4 +91,3 @@ public class FuelReport extends Report<List<FuelRow>> implements Serializable {
                 .forEach(System.out::println);
     }
 }
-
