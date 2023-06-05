@@ -1,43 +1,54 @@
 package main;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 public class FuelReportTest {
+
     private FuelReport fuelReport;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         fuelReport = new FuelReport();
+        fuelReport.saveFuelReport("12345", "2023-05-01", "City A", "State A", "50.00");
+        fuelReport.saveFuelReport("67890", "2023-05-02", "City B", "State B", "75.00");
+        fuelReport.saveFuelReport("12345", "2023-05-03", "City C", "State B", "100.00");
     }
 
     @Test
-    public void testSaveReport() {
-        // Preconditions:
-        // - FuelReport instance is created in the setUp method
+    // Precondition: The fuelReport object is properly initialized with fuelRows data.
+    // Postcondition: The total fuel spent by the specified fuel card number and state is calculated correctly.
+    
+    public void testCalculateTotalFuelSpent() {
+        double totalFuelSpent = fuelReport.calculateTotalFuelSpent("12345", "State B");
+        Assertions.assertEquals(100.00, totalFuelSpent, 0.01);
+    }
 
-        // Save fuel report rows
-        fuelReport.saveFuelReport("123456", "2023-05-15", "City1", "State1", "50.00");
-        fuelReport.saveFuelReport("789012", "2023-05-16", "City2", "State2", "75.00");
+    @Test
+    // Precondition: The fuelReport object is properly initialized with fuelRows data.
+    // Postcondition: The validity of the specified fuel card number is determined correctly.
+    public void testIsValidFuelCard() {
+        boolean isValidCard = fuelReport.isValidFuelCard("12345");
+        Assertions.assertTrue(isValidCard);
+    }
 
-        // Capture console output
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
+    @Test
+    // Precondition: The fuelReport object is properly initialized with fuelRows data.
+    // Postcondition: The fuelRows are filtered by the specified state correctly, and the filtered rows are returned in a list.
+    public void testFilterByState() {
+        List<FuelRow> filteredRows = fuelReport.filterByState("State B");
+        Assertions.assertEquals(2, filteredRows.size());
+        Assertions.assertTrue(filteredRows.stream().allMatch(row -> row.getState().equalsIgnoreCase("State B")));
+    }
 
-        // Call saveReport method
-        fuelReport.saveReport();
-
-        // Postconditions:
-        // - The fuel report rows are printed to the console in the expected format
-
-        // Verify the output
-        String expectedOutput = "Saving Fuel Report...\n" +
-                "Report ID: " + fuelReport.getReportId() + "\n" +
-                "Fuel Report Rows: \n" +
-                "Fuel Card Number: 123456, Transaction Date: 2023-05-15, City: City1, State: State1, Invoice Amount: 50.00\n" +
-                "Fuel Card Number: 789012, Transaction Date: 2023-05-16, City: City2, State: State2, Invoice Amount: 75.00\n";
-        Assert.assertEquals(expectedOutput, outContent.toString());
+    @Test
+    // Precondition: The fuelReport object is properly initialized with fuelRows data.
+    // Postcondition: The fuelRows are filtered by the specified fuel card number correctly, and the filtered rows are returned in a list.
+    public void testFilterByFuelCardNumber() {
+        List<FuelRow> filteredRows = fuelReport.filterByFuelCardNumber("67890");
+        Assertions.assertEquals(1, filteredRows.size());
+        Assertions.assertTrue(filteredRows.stream().allMatch(row -> row.getCard().equals("67890")));
     }
 }

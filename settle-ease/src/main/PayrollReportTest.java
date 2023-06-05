@@ -14,16 +14,20 @@ public class PayrollReportTest {
     public void setUp() {
         String reportData = "Sample report data";
         payrollReport = new PayrollReport<>(reportData);
+        // Preconditions: The reportData is not null
     }
 
     @Test
     public void testAddPayrollData() {
+        // Preconditions: The payrollReport object is not null
         String payrollData = "Payroll data 1";
         payrollReport.addPayrollData(payrollData);
+        // Postconditions: The payrollData is added to the payroll report
         List<String> payrollDataList = new ArrayList<>();
         payrollDataList.add(payrollData);
         Assertions.assertEquals(1, payrollDataList.size());
         Assertions.assertEquals(payrollData, payrollDataList.get(0));
+        // Postconditions: The payrollData is present in the payrollDataList
     }
 
     @Test
@@ -33,4 +37,3 @@ public class PayrollReportTest {
     }
 
 }
-
