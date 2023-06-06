@@ -7,7 +7,7 @@ SettleEase is a microservice designed to automate payroll fuel deductions for co
 
 - [Current Week Milestones](#current-week-milestones)
 - [Features](#features)
-- [Installation](#installation) **NEW**
+- [Installation](#installation)
 - [Usage](#usage)
 - [Contributing](#contributing)
 
@@ -16,7 +16,7 @@ SettleEase is a microservice designed to automate payroll fuel deductions for co
 
 As SettleEase is uniquely tailored to be a project that is built up each week, this section highlights the key accomplishments for the week: 
 
-This week our core deliverables focuses on implementing the use of a Generic class for better code reusability. A new feature is also introduced that prompts the user to enter in a fuel card number, with SettleEase returning the total for that fuel card number. 
+This week our core deliverables focused on implementing the use of a streams and lambdas, while also saving and retrieving objects. A key feature that is introduced this week allows the user to enter in another fuel card number after the initial output is received. Furthermore, a new feature is also introduced that allows the user to exit the program at any time after a fuel card number is provided. The output received this week provides a breakdown total by state for the specified fuel card number.
 
 
 ## <a id="features"></a>Features
@@ -30,8 +30,10 @@ This week our core deliverables focuses on implementing the use of a Generic cla
 | Column Splitting | We take unstructured data and split data into columns to extract desired categories |
 | Report Saving | We save the row data contents to the Report object |
 | Report ID Confirmation | We ensure that the appropriate Report ID is saved to the report with processed data |
-| Verification Match Search | We run a verification search to see if the processed results match the saved results and provide user feedback on the results |
 | User Input of Fuel Card No. | User is prompted to enter in fuel card number and SettlEase will return the fuel card number total if valid |
+| Fuel Card Total Breakdown | Fuel card total breakdown by state is returned to the console, also with an overall total for the fuel card.|
+| Repeating Fuel Card No. | User is prompted to enter in a new fuel card number and SettlEase will return the fuel card number total if valid |
+| Exit Program | User is prompted to enter in 'exit' at any time after the fuel card input has been made to close the program. |
 
 
 
@@ -43,7 +45,7 @@ This week our core deliverables focuses on implementing the use of a Generic cla
 4. You will be prompted to enter the file path (refer to step 2).
 5. Once the correct file path is entered, SettleEase will process the CSV contenst and the results will be rendered to the Console with the Report ID.
 6. SettleEase 
-7. Once processed, SettleEase will prompt you to enter in a Fuel Card number. A valid Fuel Card number to use for testing is "012". An invalid Fuel Card number to use for testing is "069".
+7. Once processed, SettleEase will prompt you to enter in a Fuel Card number. A valid Fuel Card number to use for testing is "012". Card number "012" is the only fuel card number in this file with multiple states available for a breakdown. An invalid Fuel Card number to use for testing is "069".
 
 
 ## <a id="usage"></a>Usage
@@ -54,7 +56,8 @@ Below are the instructions for running this application assuming you have succes
 3. Once the correct file path is entered, SettleEase will process the CSV contenst and the results will be rendered to the Console with the Report ID.
 4. SettleEase shall prompt you to enter in a Fuel Card number.
 5. If valid, SettleEase shall return to you the total spend for specified Fuel Card number.
-6. If invalid, SettleEase will let you know an error has occured.
+6. SettleEase will prompt you to enter in a new fuel card number whether input is valid or not, also allowing the user to 'exit' the program.
+7. After 'exit' the program successfully terminates.
 
 
 ## <a id="contributing"></a>Contributing
