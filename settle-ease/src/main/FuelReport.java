@@ -3,9 +3,12 @@ package main;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.function.Predicate;
+import java.util.Collections;
+
 
 public class FuelReport extends Report<List<FuelRow>> implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -54,15 +57,15 @@ public class FuelReport extends Report<List<FuelRow>> implements Serializable {
         return fuelRows.stream();
     }
 
-    public double calculateTotalFuelSpent(String fuelCardNumber, String state) {
-        Predicate<FuelRow> filter = fuelRow ->
-                fuelRow.getCard().equals(fuelCardNumber) && fuelRow.getState().equalsIgnoreCase(state);
+    public double calculateTotalFuelSpent(String fuelCardNumber) {
+        Predicate<FuelRow> filter = fuelRow -> fuelRow.getCard().equals(fuelCardNumber);
 
         return getFuelRowStream()
                 .filter(filter)
                 .mapToDouble(fuelRow -> Double.parseDouble(fuelRow.getInvoiceAmount()))
                 .sum();
     }
+
 
     public boolean isValidFuelCard(String fuelCardNumber) {
         Predicate<FuelRow> filter = fuelRow ->
@@ -90,4 +93,26 @@ public class FuelReport extends Report<List<FuelRow>> implements Serializable {
                 .filter(filter)
                 .forEach(System.out::println);
     }
+
+    public int getFuelCardRank(String fuelCardNumber) {
+        Map<String, Double> totalFuelSpentByCard = fuelRows.stream()
+                .collect(Collectors.groupingBy(
+                        fuelRow -> fuelRow.getCard(),
+                        Collectors.summingDouble(fuelRow -> Double.parseDouble(fuelRow.getInvoiceAmount()))
+                ));
+
+        List<Double> totalFuelSpentValues = new ArrayList<>(totalFuelSpentByCard.values());
+        Collections.sort(totalFuelSpentValues, Collections.reverseOrder());
+
+        int rank = 1;
+        for (Double totalFuelSpent : totalFuelSpentValues) {
+            if (Double.parseDouble(totalFuelSpentByCard.get(fuelCardNumber).toString()) >= totalFuelSpent) {
+                break;
+            }
+            rank++;
+        }
+
+        return rank;
+    }
+
 }

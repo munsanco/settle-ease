@@ -3,8 +3,7 @@ package main;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -24,20 +23,20 @@ public class Main {
 
             try {
                 reader = new BufferedReader(new FileReader(csvFile));
-                
+
                 // Precondition: the file path should contain a valid file from input
                 // Read the header row and split out columns to handle the original CSV formatting
 
                 String headerLine = reader.readLine();
                 String[] header = headerLine.split("\\|");
-                
+
                 // Find the indices of the desired columns
                 int cardIndex = findColumnIndex(header, "Card");
                 int trxDateIndex = findColumnIndex(header, "Trx Date");
                 int cityIndex = findColumnIndex(header, "City");
                 int stateIndex = findColumnIndex(header, "State");
                 int invoiceAmountIndex = findColumnIndex(header, "Invoice Amount");
-                
+
                 // Postcondition: the headerLine variable holds the first line in the CSV to be reformatted with desired renaming
                 // Polymorphism: FuelReport object is assigned to Report as FuelReport can now call on polymorphic methods
                 // Upcasting: creating a new instance of FuelReport
@@ -73,8 +72,8 @@ public class Main {
                                     ", State: " + state +
                                     ", Invoice Amount: " + invoiceAmount);
                         });
-                     // Postcondition: If the row data has at least 3 elements, a new task is submitted to the executorService
-                    // The saveFuelReport method is called with the extracted data, and the information is printed to the console
+                        // Postcondition: If the row data has at least 3 elements, a new task is submitted to the executorService
+                        // The saveFuelReport method is called with the extracted data, and the information is printed to the console
                     } else {
                         System.out.println("Invalid row data: " + line);
                     }
@@ -123,24 +122,19 @@ public class Main {
                         System.out.println("This fuel card number does not exist. Please try again with a valid fuel card number.");
                     } else {
                         // Calculate the total fuel spent by fuel card number and state
-                        Map<String, Double> totalFuelSpentByState = fuelReport[0].filterByFuelCardNumber(fuelCardNumber).stream()
-                                .collect(Collectors.groupingBy(
-                                        fuelRow -> fuelRow.getCard() + " - " + fuelRow.getState(),
-                                        Collectors.summingDouble(fuelRow -> Double.parseDouble(fuelRow.getInvoiceAmount()))
-                                ));
+                        double fuelCardTotalSpent = fuelReport[0].calculateTotalFuelSpent(fuelCardNumber);
+
+                        // Calculate the overall ranking based on total fuel spent
+                        int overallRank = getOverallRank(fuelReport[0], fuelCardTotalSpent);
 
                         // Output the breakdown of the total fuel spent by fuel card number and state
                         System.out.println("Total Fuel Spent Breakdown:");
-                        double overallTotalFuelSpent = 0.0;
-                        for (Map.Entry<String, Double> entry : totalFuelSpentByState.entrySet()) {
-                            String state = entry.getKey();
-                            double totalFuelSpent = entry.getValue();
-                            System.out.printf("%s: $%.2f%n", state, totalFuelSpent);
-                            overallTotalFuelSpent += totalFuelSpent;
-                        }
+                        fuelReport[0].filterByFuelCardNumber(fuelCardNumber).forEach(fuelRow ->
+                                System.out.printf("%s - %s: $%.2f%n", fuelRow.getCard(), fuelRow.getState(), Double.parseDouble(fuelRow.getInvoiceAmount())));
+                        System.out.println(overallRank + getRankSuffix(overallRank) + " highest ranked total based upon total fuel spend.");
 
                         // Output the overall total fuel spent
-                        System.out.printf("Overall Total Fuel Spent: $%.2f%n", overallTotalFuelSpent);
+                        System.out.printf("Overall Total Fuel Spent: $%.2f%n", fuelCardTotalSpent);
                     }
                 }
             }
@@ -174,5 +168,29 @@ public class Main {
         // Postcondition: The method returns an array containing the row data extracted from the given line.
         // Each element in the array represents an individual data element from the row, with delimiters properly handled.
         return rowData;
+    }
+
+    private static int getOverallRank(FuelReport fuelReport, double fuelCardTotalSpent) {
+        Map<String, Double> totalFuelSpentByFuelCard = fuelReport.getFuelRows().stream()
+                .collect(Collectors.groupingBy(FuelRow::getCard,
+                        Collectors.summingDouble(row -> Double.parseDouble(row.getInvoiceAmount()))));
+
+        List<Double> totalFuelSpentValues = new ArrayList<>(totalFuelSpentByFuelCard.values());
+        Collections.sort(totalFuelSpentValues, Collections.reverseOrder());
+
+        int overallRank = totalFuelSpentValues.indexOf(fuelCardTotalSpent) + 1;
+        return overallRank;
+    }
+
+    private static String getRankSuffix(int rank) {
+        if (rank == 1) {
+            return "st";
+        } else if (rank == 2) {
+            return "nd";
+        } else if (rank == 3) {
+            return "rd";
+        } else {
+            return "th";
+        }
     }
 }
