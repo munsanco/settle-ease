@@ -45,8 +45,11 @@ public class Main {
                 fuelReport[0].process();
 
                 ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+                // Create an ExecutorService instance with a fixed number of threads based on the available processors
+                // This executorService will be responsible for executing concurrent tasks
                 // Postcondition: An ExecutorService instance is created with the specified number of threads and assigned to the executorService variable
                 String line;
+                // Process each line from the input reader, skipping empty lines
                 while ((line = reader.readLine()) != null) {
                     line = line.trim();
                     if (line.isEmpty()) {
@@ -58,28 +61,37 @@ public class Main {
                     // The method splitRowData is called to extract individual data elements from the line
 
                     if (rowData.length >= 3) {
+                    	// Precondition: If the row data has at least 3 elements, it is considered valid for processing
                         String card = rowData[cardIndex];
                         String trxDate = rowData[trxDateIndex];
                         String city = rowData[cityIndex];
                         String state = rowData[stateIndex];
                         String invoiceAmount = rowData[invoiceAmountIndex];
 
+                        // Submit a new task to the executorService for concurrent execution
                         executorService.submit(() -> {
-                            fuelReport[0].saveFuelReport(card, trxDate, city, state, invoiceAmount);
+                        	// Save the fuel report data using the extracted values
+                            fuelReport[0].saveFuelReport(card, trxDate, city, state, invoiceAmount);                        
+                            // Print the fuel report information to the console
                             System.out.println("Fuel Card Number: " + card +
                                     ", Transaction Date: " + trxDate +
                                     ", City: " + city +
                                     ", State: " + state +
                                     ", Invoice Amount: " + invoiceAmount);
+                            
                         });
-                        // Postcondition: If the row data has at least 3 elements, a new task is submitted to the executorService
+                        // Postcondition: A new task is submitted to the executorService
                         // The saveFuelReport method is called with the extracted data, and the information is printed to the console
                     } else {
                         System.out.println("Invalid row data: " + line);
+                        // Postcondition: If the row data has less than 3 elements, it is considered invalid and an error message is printed
                     }
                 }
 
                 executorService.shutdown();
+                // Initiates an orderly shutdown of the executorService
+                // After this call, the executorService will no longer accept new tasks
+                // Previously submitted tasks will continue to execute
                 while (!executorService.isTerminated()) {
                     // Wait for all tasks to finish
                 }
@@ -89,18 +101,25 @@ public class Main {
             } catch (IOException csvError) {
                 System.out.println("Processing failed. An error occurred while reading the CSV file.");
                 csvError.printStackTrace();
+                // Exception handling for IOException that may occur while reading the CSV file
+                // Prints an error message and the stack trace of the exception
             } finally {
                 if (reader != null) {
                     try {
                         reader.close();
+                        // Close the reader to release system resources
                     } catch (IOException closeError) {
                         System.out.println("An error occurred while closing the CSV file.");
                         closeError.printStackTrace();
+                        // Exception handling for IOException that may occur while closing the CSV file
+                        // Prints an error message and the stack trace of the exception
                     }
                 }
             }
 
             if (fuelReport[0] == null) {
+            	 // Precondition: The fuelReport[0] object should not be null
+            	// Checks if there is any data to process in the fuelReport array
                 System.out.println("No data to process. Exiting the program.");
                 return;
             }
@@ -114,10 +133,11 @@ public class Main {
                 if (fuelCardNumber.equalsIgnoreCase("exit")) {
                     System.out.println("You have successfully exited the program.");
                     exitProgram = true;
+                    // Postcondition: The exitProgram flag is set to true
                 } else {
                     // Check if the fuel card number exists
                     boolean cardExists = fuelReport[0].isValidFuelCard(fuelCardNumber);
-
+                    // Postcondition: The cardExists flag indicates whether the fuel card number exists or not
                     if (!cardExists) {
                         System.out.println("This fuel card number does not exist. Please try again with a valid fuel card number.");
                     } else {
@@ -125,7 +145,7 @@ public class Main {
                         double fuelCardTotalSpent = fuelReport[0].calculateTotalFuelSpent(fuelCardNumber);
 
                         // Calculate the overall ranking based on total fuel spent
-                        int overallRank = getOverallRank(fuelReport[0], fuelCardTotalSpent);
+                        int overallRank = getOverallRankConcurrently(fuelReport[0], fuelCardTotalSpent);
 
                         // Output the breakdown of the total fuel spent by fuel card number and state
                         System.out.println("Total Fuel Spent Breakdown:");
@@ -170,19 +190,27 @@ public class Main {
         return rowData;
     }
 
-    private static int getOverallRank(FuelReport fuelReport, double fuelCardTotalSpent) {
-        Map<String, Double> totalFuelSpentByFuelCard = fuelReport.getFuelRows().stream()
+    private static int getOverallRankConcurrently(FuelReport fuelReport, double fuelCardTotalSpent) {
+    	// Precondition: The fuelReport object and fuelCardTotalSpent are not null
+    	// Group the fuel rows by fuel card and calculate the total fuel spent by each card
+    	Map<String, Double> totalFuelSpentByFuelCard = fuelReport.getFuelRows().stream()
                 .collect(Collectors.groupingBy(FuelRow::getCard,
                         Collectors.summingDouble(row -> Double.parseDouble(row.getInvoiceAmount()))));
-
+    					// Postcondition: The totalFuelSpentByFuelCard map contains the total fuel spent for each fuel card
         List<Double> totalFuelSpentValues = new ArrayList<>(totalFuelSpentByFuelCard.values());
-        Collections.sort(totalFuelSpentValues, Collections.reverseOrder());
-
+        // Postcondition: The totalFuelSpentValues list contains the total fuel spent values for each fuel card
+        // Concurrent sorting of totalFuelSpentValues
+        totalFuelSpentValues = totalFuelSpentValues.parallelStream()
+                .sorted(Collections.reverseOrder())
+                .collect(Collectors.toList());
+        // Postcondition: The totalFuelSpentValues list is sorted concurrently in descending order
         int overallRank = totalFuelSpentValues.indexOf(fuelCardTotalSpent) + 1;
+        // Postcondition: The overallRank holds the rank of the fuel card's total fuel spent
         return overallRank;
     }
 
     private static String getRankSuffix(int rank) {
+    	// Precondition: The rank is a positive integer
         if (rank == 1) {
             return "st";
         } else if (rank == 2) {
@@ -193,4 +221,5 @@ public class Main {
             return "th";
         }
     }
+    	// Postcondition: The suffix string corresponding to the rank is returned
 }
