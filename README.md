@@ -16,7 +16,7 @@ SettleEase is a microservice designed to automate payroll fuel deductions for co
 
 As SettleEase is uniquely tailored to be a project that is built up each week, this section highlights the key accomplishments for the week: 
 
-This week our core deliverables focused on implementing the use of a streams and lambdas, while also saving and retrieving objects. A key feature that is introduced this week allows the user to enter in another fuel card number after the initial output is received. Furthermore, a new feature is also introduced that allows the user to exit the program at any time after a fuel card number is provided. The output received this week provides a breakdown total by state for the specified fuel card number.
+This week our core deliverables focused on implementing the use of concurrency. A key feature that is also introduced this week is the ability to return the overall rank for a specified fuel card number based upon its total spend. We demonstrate the use of concurrency by refactoring the way that the csv file is processed, switching over to a concurrent method as opposed to processing each row one at a time. Additionally, we are also using concurrency in the actual retrieval of the fuel card ranking to provide a more optimized search that is a better use of resources, especially when large datasets are introduced.
 
 
 ## <a id="features"></a>Features
@@ -26,12 +26,13 @@ This week our core deliverables focused on implementing the use of a streams and
 | User Input of File Path | User is prompted to enter in a local file path to begin the SettleEase parsing of data |
 | Report Creation | Once valid file is received we save the file to a Report |
 | Exceptions Handling | If file path is unreadable or does not exist an exception is thrown for user feedback and resource closing |
-| Data Parsing | We parse the CSV file contents to return specific categories |
+| Data Parsing | We parse the CSV file concurrently contents to return specific categories |
 | Column Splitting | We take unstructured data and split data into columns to extract desired categories |
 | Report Saving | We save the row data contents to the Report object |
 | Report ID Confirmation | We ensure that the appropriate Report ID is saved to the report with processed data |
 | User Input of Fuel Card No. | User is prompted to enter in fuel card number and SettlEase will return the fuel card number total if valid |
 | Fuel Card Total Breakdown | Fuel card total breakdown by state is returned to the console, also with an overall total for the fuel card.|
+| Fuel Card Ranking | Along with the fuel card total, an overall rank is provided relative to the total spent for each specified fuel card number.|
 | Repeating Fuel Card No. | User is prompted to enter in a new fuel card number and SettlEase will return the fuel card number total if valid |
 | Exit Program | User is prompted to enter in 'exit' at any time after the fuel card input has been made to close the program. |
 
