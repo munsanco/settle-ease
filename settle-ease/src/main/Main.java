@@ -134,8 +134,11 @@ public class Main {
                     System.out.println("You have successfully exited the program.");
                     exitProgram = true;
                 } else if (fuelCardNumber.equalsIgnoreCase("connect")) {
+                    System.out.println("Enter db file path to connect to the database: ");
+                    String dbFilePath = scanner.nextLine();
+
                     DatabaseConnector connector = new DatabaseConnector();
-                    connector.connect();
+                    connector.connect(dbFilePath);
                 } else {
                     // Check if the fuel card number exists
                     boolean cardExists = fuelReport[0].isValidFuelCard(fuelCardNumber);

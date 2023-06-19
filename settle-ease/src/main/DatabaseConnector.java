@@ -6,13 +6,13 @@ import java.sql.SQLException;
 
 public class DatabaseConnector {
     
-    public void connect() {
+    public void connect(String filePath) {
         try {
             // Load the JDBC driver
             Class.forName("org.sqlite.JDBC");
 
             // Establish a connection to the SQLite database
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:/Users/mundosanchez/GitHub/settle-ease/settle-ease/src/test/resources/FuelData.db");
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:" + filePath);
             
             // Print a success message if the connection is successful
             System.out.println("Connected to the database!");
@@ -28,6 +28,5 @@ public class DatabaseConnector {
         }
     }
 }
-
 
 
