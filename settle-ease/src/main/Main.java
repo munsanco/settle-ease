@@ -127,17 +127,18 @@ public class Main {
             String fuelCardNumber = null;
             boolean exitProgram = false;
             while (!exitProgram) {
-                System.out.println("Enter the fuel card number (or 'exit' to quit): ");
+                System.out.println("Enter the fuel card number ('exit' to quit or 'connect' to database): ");
                 fuelCardNumber = scanner.nextLine();
 
                 if (fuelCardNumber.equalsIgnoreCase("exit")) {
                     System.out.println("You have successfully exited the program.");
                     exitProgram = true;
-                    // Postcondition: The exitProgram flag is set to true
+                } else if (fuelCardNumber.equalsIgnoreCase("connect")) {
+                    DatabaseConnector connector = new DatabaseConnector();
+                    connector.connect();
                 } else {
                     // Check if the fuel card number exists
                     boolean cardExists = fuelReport[0].isValidFuelCard(fuelCardNumber);
-                    // Postcondition: The cardExists flag indicates whether the fuel card number exists or not
                     if (!cardExists) {
                         System.out.println("This fuel card number does not exist. Please try again with a valid fuel card number.");
                     } else {
@@ -156,10 +157,10 @@ public class Main {
                         // Output the overall total fuel spent
                         System.out.printf("Overall Total Fuel Spent: $%.2f%n", fuelCardTotalSpent);
                     }
-                }
+                }}}
             }
-        }
-    }
+
+            
 
     private static int findColumnIndex(String[] header, String columnName) {
         // Precondition: header and columnName are not null

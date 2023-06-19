@@ -1,10 +1,12 @@
 package main;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnector {
-    public static void main(String[] args) {
+    
+    public void connect() {
         try {
             // Load the JDBC driver
             Class.forName("org.sqlite.JDBC");
