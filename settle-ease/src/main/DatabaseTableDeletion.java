@@ -6,10 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DatabaseTableDeletion {
-    public static void main(String[] args) {
-        // Database connection parameters
-        String dbFilePath = "/Users/mundosanchez/GitHub/settle-ease/settle-ease/src/test/resources/FuelData.db";
-
+    public static void deleteTables(String dbFilePath) {
         // Table names to delete
         String[] tableNames = {"FuelData", "FuelCard"};
 
@@ -35,4 +32,3 @@ public class DatabaseTableDeletion {
         }
     }
 }
-

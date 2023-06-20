@@ -152,9 +152,23 @@ public class Main {
                 System.out.println("Enter the fuel card number ('exit' to quit, 'rank' to sort): ");
                 fuelCardNumber = scanner.nextLine();
 
+               
+                    
                 if (fuelCardNumber.equalsIgnoreCase("exit")) {
                     System.out.println("You have successfully exited the program.");
+                    // Trigger the code inside DatabaseTableDeletion.java
+                    System.out.println("Deleting database tables...");
+                    DatabaseTableDeletion.deleteTables(dbFilePath);
+                    System.out.println("Database tables deleted.");
                     exitProgram = true;
+                
+                    
+                    
+                    
+                    
+                    
+                    
+                    
                 } else if (fuelCardNumber.equalsIgnoreCase("rank")) {
                     // Display sorted records from the FuelData table
                     try {
