@@ -1,8 +1,8 @@
 package main;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -21,13 +21,19 @@ public class Main {
             // For example, mine is /Users/mundosanchez/GitHub/settle-ease/settle-ease/src/test/resources/TR123325.csv
             System.out.println("Enter the file path: ");
             csvFile = scanner.nextLine();
+            
+            System.out.println("Enter the database file path: ");
+            String dbFilePath = scanner.nextLine();
+            // Create an instance of DataInserter and assign it to the dataInserter variable
+            dataInserter[0] = new DataInserter(dbFilePath);
+            // Trigger the creation of database tables
+            CreateDatabaseTable.createDatabaseTables(dbFilePath);
 
             try {
                 reader = new BufferedReader(new FileReader(csvFile));
 
                 // Precondition: the file path should contain a valid file from input
                 // Read the header row and split out columns to handle the original CSV formatting
-
                 String headerLine = reader.readLine();
                 String[] header = headerLine.split("\\|");
 
@@ -41,7 +47,6 @@ public class Main {
                 // Postcondition: the headerLine variable holds the first line in the CSV to be reformatted with desired renaming
                 // Polymorphism: FuelReport object is assigned to Report as FuelReport can now call on polymorphic methods
                 // Upcasting: creating a new instance of FuelReport
-
                 fuelReport[0] = new FuelReport();
                 fuelReport[0].process();
 
@@ -49,6 +54,7 @@ public class Main {
                 // Create an ExecutorService instance with a fixed number of threads based on the available processors
                 // This executorService will be responsible for executing concurrent tasks
                 // Postcondition: An ExecutorService instance is created with the specified number of threads and assigned to the executorService variable
+
                 String line;
                 // Process each line from the input reader, skipping empty lines
                 while ((line = reader.readLine()) != null) {
@@ -81,14 +87,11 @@ public class Main {
                                     ", Invoice Amount: " + invoiceAmount);
 
                             // Insert the data into the database
-                            boolean insertSuccess = dataInserter[0].insertData(card, trxDate, city, state, invoiceAmount);
-                            if (insertSuccess) {
-                                System.out.println("Data inserted into FuelData table successfully.");
-                            } else {
-                                System.out.println("Error inserting data into FuelData table.");
+                            try {
+                                dataInserter[0].insertData(card, trxDate, city, state, invoiceAmount);
+                            } catch (SQLException e) {
+                                System.out.println("Error inserting data into FuelData table: " + e.getMessage());
                             }
-
-
                         });
                         // Postcondition: A new task is submitted to the executorService
                         // The saveFuelReport method is called with the extracted data, and the information is printed to the console
@@ -107,6 +110,9 @@ public class Main {
                 }
 
                 // Postcondition: Each non-empty row of data is processed from the CSV file
+
+                System.out.println("Data inserted into FuelData table successfully.");
+                // Print success message once all data is inserted into the FuelData table
 
             } catch (IOException csvError) {
                 System.out.println("Processing failed. An error occurred while reading the CSV file.");
@@ -137,18 +143,12 @@ public class Main {
             String fuelCardNumber = null;
             boolean exitProgram = false;
             while (!exitProgram) {
-                System.out.println("Enter the fuel card number ('exit' to quit or 'connect' to database): ");
+                System.out.println("Enter the fuel card number ('exit' to quit): ");
                 fuelCardNumber = scanner.nextLine();
 
                 if (fuelCardNumber.equalsIgnoreCase("exit")) {
                     System.out.println("You have successfully exited the program.");
                     exitProgram = true;
-                } else if (fuelCardNumber.equalsIgnoreCase("connect")) {
-                    System.out.println("Enter db file path to connect to the database: ");
-                    String dbFilePath = scanner.nextLine();
-
-                    // Create an instance of DataInserter and assign it to the dataInserter variable
-                    dataInserter[0] = new DataInserter(dbFilePath);
                 } else {
                     // Check if the fuel card number exists
                     boolean cardExists = fuelReport[0].isValidFuelCard(fuelCardNumber);
@@ -219,12 +219,12 @@ public class Main {
                 .collect(Collectors.toList());
         // Postcondition: The totalFuelSpentValues list is sorted concurrently in descending order
         int overallRank = totalFuelSpentValues.indexOf(fuelCardTotalSpent) + 1;
-        // Postcondition: The overallRank holds the rank of the fuel card's total fuel spent
+        // Postcondition: The overallRank is calculated as the index of fuelCardTotalSpent in the sorted list + 1
         return overallRank;
     }
 
     private static String getRankSuffix(int rank) {
-        // Precondition: The rank is a positive integer
+        // Precondition: rank is a positive integer
         if (rank == 1) {
             return "st";
         } else if (rank == 2) {
@@ -235,5 +235,5 @@ public class Main {
             return "th";
         }
     }
-    // Postcondition: The suffix string corresponding to the rank is returned
 }
+

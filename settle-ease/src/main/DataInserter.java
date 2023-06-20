@@ -1,4 +1,5 @@
 package main;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -6,12 +7,14 @@ import java.sql.SQLException;
 
 public class DataInserter {
     private String url;
+    private int successCount;
 
     public DataInserter(String dbFilePath) {
         url = "jdbc:sqlite:" + dbFilePath;
+        successCount = 0;
     }
 
-    public boolean insertData(String cardNumber, String trxDate, String city, String state, String invoiceAmount) {
+    public void insertData(String cardNumber, String trxDate, String city, String state, String invoiceAmount) throws SQLException {
         String query = "INSERT INTO FuelData (cardNumber, trxDate, city, state, invoiceAmount) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection connection = DriverManager.getConnection(url);
@@ -23,11 +26,15 @@ public class DataInserter {
             statement.setString(5, invoiceAmount);
 
             int rowsInserted = statement.executeUpdate();
-
-            return rowsInserted > 0;
+            if (rowsInserted > 0) {
+                successCount += rowsInserted;
+            }
         } catch (SQLException e) {
-            System.out.println("Error inserting data into FuelData table: " + e.getMessage());
-            return false;
+            throw new SQLException("Error inserting data into FuelData table: " + e.getMessage());
         }
+    }
+
+    public int getSuccessCount() {
+        return successCount;
     }
 }

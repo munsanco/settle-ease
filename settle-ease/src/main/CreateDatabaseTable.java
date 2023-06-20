@@ -6,8 +6,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class CreateDatabaseTable {
-    public static void main(String[] args) {
-        String url = "jdbc:sqlite:/Users/mundosanchez/GitHub/settle-ease/settle-ease/src/test/resources/FuelData.db";
+    public static void createDatabaseTables(String dbFilePath) {
+        String url = "jdbc:sqlite:" + dbFilePath;
 
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
@@ -28,6 +28,7 @@ public class CreateDatabaseTable {
                     "city TEXT," +
                     "state TEXT," +
                     "invoiceAmount TEXT," +
+                    "cardNumber TEXT," +
                     "fuelCardId INTEGER," +
                     "FOREIGN KEY(fuelCardId) REFERENCES FuelCard(id)" +
                     ");";
@@ -41,5 +42,3 @@ public class CreateDatabaseTable {
         }
     }
 }
-
-
