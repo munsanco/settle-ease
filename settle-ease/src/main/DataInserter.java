@@ -83,6 +83,30 @@ public class DataInserter {
     }
 
     /**
+     * Retrieves the employee name associated with the given fuel card number from the FuelCard table.
+     *
+     * @param fuelCardNumber the fuel card number
+     * @return the employee name associated with the fuel card number, or null if not found
+     * @throws SQLException if an error occurs during database operations
+     */
+    public String getEmployeeName(String fuelCardNumber) throws SQLException {
+        String employeeName = null;
+        String query = "SELECT employeeName FROM FuelCard WHERE cardNumber = ?";
+        try (Connection connection = DriverManager.getConnection(url);
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, fuelCardNumber);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    employeeName = resultSet.getString("employeeName");
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Error retrieving employee name from FuelCard table: " + e.getMessage());
+        }
+        return employeeName;
+    }
+
+    /**
      * Gets the count of successful data insertions.
      *
      * @return the count of successful data insertions
@@ -91,3 +115,4 @@ public class DataInserter {
         return successCount;
     }
 }
+

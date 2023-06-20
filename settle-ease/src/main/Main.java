@@ -1,4 +1,5 @@
 package main;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -152,8 +153,6 @@ public class Main {
                 System.out.println("Enter the fuel card number ('exit' to quit, 'rank' to sort): ");
                 fuelCardNumber = scanner.nextLine();
 
-               
-                    
                 if (fuelCardNumber.equalsIgnoreCase("exit")) {
                     System.out.println("You have successfully exited the program.");
                     // Trigger the code inside DatabaseTableDeletion.java
@@ -161,14 +160,6 @@ public class Main {
                     DatabaseTableDeletion.deleteTables(dbFilePath);
                     System.out.println("Database tables deleted.");
                     exitProgram = true;
-                
-                    
-                    
-                    
-                    
-                    
-                    
-                    
                 } else if (fuelCardNumber.equalsIgnoreCase("rank")) {
                     // Display sorted records from the FuelData table
                     try {
@@ -187,6 +178,14 @@ public class Main {
                     if (!cardExists) {
                         System.out.println("This fuel card number does not exist. Please try again with a valid fuel card number.");
                     } else {
+                        try {
+                            // Retrieve the employee name for the given fuel card number
+                            String employeeName = dataInserter[0].getEmployeeName(fuelCardNumber);
+                            System.out.println("This card belongs to " + employeeName);
+                        } catch (SQLException e) {
+                            System.out.println("Error retrieving employee name: " + e.getMessage());
+                        }
+
                         // Calculate the total fuel spent by fuel card number and state
                         double fuelCardTotalSpent = fuelReport[0].calculateTotalFuelSpent(fuelCardNumber);
 
@@ -268,4 +267,3 @@ public class Main {
         }
     }
 }
-
