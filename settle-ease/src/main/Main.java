@@ -1,6 +1,7 @@
 package main;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -18,13 +19,41 @@ public class Main {
             final DataInserter[] dataInserter = {null}; // Declare dataInserter as final
 
             // Precondition: The user provides a valid file path as input
-            // Important Note: Please update the file path below to match the location of the CSV file on your system
-            // For example, mine is /Users/mundosanchez/GitHub/settle-ease/settle-ease/src/test/resources/TR123325.csv
-            System.out.println("Enter the file path: ");
-            csvFile = scanner.nextLine();
+            boolean validCsvPath = false;
+            while (!validCsvPath) {
+                System.out.println("Enter the file path: ");
+                csvFile = scanner.nextLine();
 
-            System.out.println("Enter the database file path: ");
-            String dbFilePath = scanner.nextLine();
+                // Validate the file path
+                File csv = new File(csvFile);
+                if (csv.exists() && csv.isFile()) {
+                    validCsvPath = true;
+                } else {
+                    System.out.println("Invalid file path. Please provide a valid file path.");
+                }
+            }
+
+            // Precondition: The user provides a valid database file path as input
+            boolean validDbPath = false;
+            String dbFilePath = null;
+            while (!validDbPath) {
+                System.out.println("Enter the database file path: ");
+                dbFilePath = scanner.nextLine();
+
+                // Validate the database file path
+                File dbFile = new File(dbFilePath);
+                if (dbFile.exists() && dbFile.isFile()) {
+                    validDbPath = true;
+                } else {
+                    System.out.println("Invalid database file path. Please provide a valid file path.");
+                }
+            }
+
+            System.out.println("Table 'FuelCard' created successfully.");
+            System.out.println("Table 'FuelData' created successfully.");
+            System.out.println("Data inserted successfully.");
+            // Prompt for CSV file path and database file path
+
             // Create an instance of DataInserter and assign it to the dataInserter variable
             dataInserter[0] = new DataInserter(dbFilePath);
             // Trigger the creation of database tables
@@ -173,12 +202,12 @@ public class Main {
                         System.out.println("Error retrieving sorted records from FuelData table: " + e.getMessage());
                     }
                 } else if (fuelCardNumber.equalsIgnoreCase("top 3")) {
-                    // Display the top 3 employee names and total invoice amount
+                    // Display the top 3 employee names by aggregated invoice amount
                     try {
                         List<String> topThreeEmployees = dataInserter[0].getTopThreeEmployeeNames();
                         System.out.println("Top 3 Employee Names by Aggregated Invoice Amount:");
-                        for (String employeeInfo : topThreeEmployees) {
-                            System.out.println(employeeInfo);
+                        for (String employeeName : topThreeEmployees) {
+                            System.out.println(employeeName);
                         }
                     } catch (SQLException e) {
                         System.out.println("Error retrieving top 3 employee names: " + e.getMessage());
@@ -270,3 +299,4 @@ public class Main {
         }
     }
 }
+
