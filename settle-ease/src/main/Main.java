@@ -1,4 +1,5 @@
 package main;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -7,6 +8,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
+
 
 public class Main {
     public static void main(String[] args) {
@@ -28,6 +30,14 @@ public class Main {
             dataInserter[0] = new DataInserter(dbFilePath);
             // Trigger the creation of database tables
             CreateDatabaseTable.createDatabaseTables(dbFilePath);
+
+         // Trigger the insertion of data into the FuelCard table
+            InsertPayrollTable.insertDataIntoFuelCardTable(dbFilePath);
+            System.out.println("Data inserted into FuelCard table successfully.");
+
+            
+            
+            
 
             try {
                 reader = new BufferedReader(new FileReader(csvFile));
@@ -54,7 +64,7 @@ public class Main {
                 // Create an ExecutorService instance with a fixed number of threads based on the available processors
                 // This executorService will be responsible for executing concurrent tasks
                 // Postcondition: An ExecutorService instance is created with the specified number of threads and assigned to the executorService variable
-
+                                                        
                 String line;
                 // Process each line from the input reader, skipping empty lines
                 while ((line = reader.readLine()) != null) {
@@ -105,6 +115,7 @@ public class Main {
                 // Initiates an orderly shutdown of the executorService
                 // After this call, the executorService will no longer accept new tasks
                 // Previously submitted tasks will continue to execute
+                     
                 while (!executorService.isTerminated()) {
                     // Wait for all tasks to finish
                 }
@@ -113,6 +124,11 @@ public class Main {
 
                 System.out.println("Data inserted into FuelData table successfully.");
                 // Print success message once all data is inserted into the FuelData table
+                
+                
+
+                
+                
 
             } catch (IOException csvError) {
                 System.out.println("Processing failed. An error occurred while reading the CSV file.");

@@ -1,11 +1,10 @@
 package main;
-
 import java.sql.*;
-import java.util.Scanner;
 
-public class InsertDataTable {
-    public static void main(String[] args) {
-        try (Connection conn = getConnectionFromInput();
+
+public class InsertPayrollTable {
+    public static void insertDataIntoFuelCardTable(String dbFilePath) {
+        try (Connection conn = getConnection(dbFilePath);
              Statement stmt = conn.createStatement()) {
 
             // Insert data into FuelCard table
@@ -48,13 +47,9 @@ public class InsertDataTable {
         }
     }
 
-    private static Connection getConnectionFromInput() throws SQLException {
-        try (Scanner scanner = new Scanner(System.in)) {
-            System.out.println("Enter db file path to connect to the database: ");
-            String dbFilePath = scanner.nextLine();
-            String url = "jdbc:sqlite:" + dbFilePath;
-            return DriverManager.getConnection(url);
-        }
+    private static Connection getConnection(String dbFilePath) throws SQLException {
+        String url = "jdbc:sqlite:" + dbFilePath;
+        return DriverManager.getConnection(url);
     }
 
     private static void insertData(Statement stmt, String cardNumber, String employeeName) throws SQLException {
@@ -63,4 +58,3 @@ public class InsertDataTable {
         stmt.executeUpdate(insertQuery);
     }
 }
-
