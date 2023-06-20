@@ -1,5 +1,4 @@
 package main;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -8,7 +7,6 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
-
 
 public class Main {
     public static void main(String[] args) {
@@ -23,7 +21,7 @@ public class Main {
             // For example, mine is /Users/mundosanchez/GitHub/settle-ease/settle-ease/src/test/resources/TR123325.csv
             System.out.println("Enter the file path: ");
             csvFile = scanner.nextLine();
-            
+
             System.out.println("Enter the database file path: ");
             String dbFilePath = scanner.nextLine();
             // Create an instance of DataInserter and assign it to the dataInserter variable
@@ -31,13 +29,9 @@ public class Main {
             // Trigger the creation of database tables
             CreateDatabaseTable.createDatabaseTables(dbFilePath);
 
-         // Trigger the insertion of data into the FuelCard table
+            // Trigger the insertion of data into the FuelCard table
             InsertPayrollTable.insertDataIntoFuelCardTable(dbFilePath);
             System.out.println("Data inserted into FuelCard table successfully.");
-
-            
-            
-            
 
             try {
                 reader = new BufferedReader(new FileReader(csvFile));
@@ -64,7 +58,7 @@ public class Main {
                 // Create an ExecutorService instance with a fixed number of threads based on the available processors
                 // This executorService will be responsible for executing concurrent tasks
                 // Postcondition: An ExecutorService instance is created with the specified number of threads and assigned to the executorService variable
-                                                        
+
                 String line;
                 // Process each line from the input reader, skipping empty lines
                 while ((line = reader.readLine()) != null) {
@@ -79,7 +73,7 @@ public class Main {
 
                     if (rowData.length >= 3) {
                         // Precondition: If the row data has at least 3 elements, it is considered valid for processing
-                        String card = rowData[cardIndex];
+                        String cardNumber = rowData[cardIndex];
                         String trxDate = rowData[trxDateIndex];
                         String city = rowData[cityIndex];
                         String state = rowData[stateIndex];
@@ -88,9 +82,9 @@ public class Main {
                         // Submit a new task to the executorService for concurrent execution
                         executorService.submit(() -> {
                             // Save the fuel report data using the extracted values
-                            fuelReport[0].saveFuelReport(card, trxDate, city, state, invoiceAmount);
+                            fuelReport[0].saveFuelReport(cardNumber, trxDate, city, state, invoiceAmount);
                             // Print the fuel report information to the console
-                            System.out.println("Fuel Card Number: " + card +
+                            System.out.println("Fuel Card Number: " + cardNumber +
                                     ", Transaction Date: " + trxDate +
                                     ", City: " + city +
                                     ", State: " + state +
@@ -98,7 +92,7 @@ public class Main {
 
                             // Insert the data into the database
                             try {
-                                dataInserter[0].insertData(card, trxDate, city, state, invoiceAmount);
+                                dataInserter[0].insertData(cardNumber, trxDate, city, state, invoiceAmount);
                             } catch (SQLException e) {
                                 System.out.println("Error inserting data into FuelData table: " + e.getMessage());
                             }
@@ -115,7 +109,7 @@ public class Main {
                 // Initiates an orderly shutdown of the executorService
                 // After this call, the executorService will no longer accept new tasks
                 // Previously submitted tasks will continue to execute
-                     
+
                 while (!executorService.isTerminated()) {
                     // Wait for all tasks to finish
                 }
@@ -124,11 +118,6 @@ public class Main {
 
                 System.out.println("Data inserted into FuelData table successfully.");
                 // Print success message once all data is inserted into the FuelData table
-                
-                
-
-                
-                
 
             } catch (IOException csvError) {
                 System.out.println("Processing failed. An error occurred while reading the CSV file.");
@@ -158,13 +147,26 @@ public class Main {
 
             String fuelCardNumber = null;
             boolean exitProgram = false;
+
             while (!exitProgram) {
-                System.out.println("Enter the fuel card number ('exit' to quit): ");
+                System.out.println("Enter the fuel card number ('exit' to quit, 'rank' to sort): ");
                 fuelCardNumber = scanner.nextLine();
 
                 if (fuelCardNumber.equalsIgnoreCase("exit")) {
                     System.out.println("You have successfully exited the program.");
                     exitProgram = true;
+                } else if (fuelCardNumber.equalsIgnoreCase("rank")) {
+                    // Display sorted records from the FuelData table
+                    try {
+                        List<FuelRow> sortedRecords = dataInserter[0].getSortedFuelData();
+                        System.out.println("Sorted Records from FuelData table:");
+                        for (FuelRow record : sortedRecords) {
+                            System.out.printf("Fuel Card Number: %s, Transaction Date: %s, City: %s, State: %s, Invoice Amount: %s%n",
+                                    record.getCard(), record.getTrxDate(), record.getCity(), record.getState(), record.getInvoiceAmount());
+                        }
+                    } catch (SQLException e) {
+                        System.out.println("Error retrieving sorted records from FuelData table: " + e.getMessage());
+                    }
                 } else {
                     // Check if the fuel card number exists
                     boolean cardExists = fuelReport[0].isValidFuelCard(fuelCardNumber);
