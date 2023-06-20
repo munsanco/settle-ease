@@ -173,12 +173,12 @@ public class Main {
                         System.out.println("Error retrieving sorted records from FuelData table: " + e.getMessage());
                     }
                 } else if (fuelCardNumber.equalsIgnoreCase("top 3")) {
-                    // Display the top 3 employee names by aggregated invoice amount
+                    // Display the top 3 employee names and total invoice amount
                     try {
                         List<String> topThreeEmployees = dataInserter[0].getTopThreeEmployeeNames();
                         System.out.println("Top 3 Employee Names by Aggregated Invoice Amount:");
-                        for (String employeeName : topThreeEmployees) {
-                            System.out.println(employeeName);
+                        for (String employeeInfo : topThreeEmployees) {
+                            System.out.println(employeeInfo);
                         }
                     } catch (SQLException e) {
                         System.out.println("Error retrieving top 3 employee names: " + e.getMessage());

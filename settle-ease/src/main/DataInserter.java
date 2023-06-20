@@ -3,7 +3,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class DataInserter {
     private String url;
     private int successCount;
@@ -21,11 +20,11 @@ public class DataInserter {
     /**
      * Inserts data into the FuelData table.
      *
-     * @param cardNumber    the fuel card number
-     * @param trxDate       the transaction date
-     * @param city          the city
-     * @param state         the state
-     * @param invoiceAmount the invoice amount
+     * @param cardNumber     the fuel card number
+     * @param trxDate        the transaction date
+     * @param city           the city
+     * @param state          the state
+     * @param invoiceAmount  the invoice amount
      * @throws SQLException if an error occurs during database operations
      */
     public void insertData(String cardNumber, String trxDate, String city, String state, String invoiceAmount) throws SQLException {
@@ -83,19 +82,20 @@ public class DataInserter {
     }
 
     /**
-     * Retrieves the employee name based on the fuel card number.
+     * Retrieves the employee name for the given fuel card number.
      *
-     * @param cardNumber the fuel card number
+     * @param fuelCardNumber the fuel card number
      * @return the employee name
      * @throws SQLException if an error occurs during database operations
      */
-    public String getEmployeeName(String cardNumber) throws SQLException {
+    public String getEmployeeName(String fuelCardNumber) throws SQLException {
         String employeeName = null;
+
         String query = "SELECT employeeName FROM FuelCard WHERE cardNumber = ?";
 
         try (Connection connection = DriverManager.getConnection(url);
              PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, cardNumber);
+            statement.setString(1, fuelCardNumber);
 
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -109,17 +109,18 @@ public class DataInserter {
     }
 
     /**
-     * Retrieves the top three employee names based on aggregated invoice amounts from FuelData.
+     * Retrieves the top three employee names by aggregated invoice amount.
      *
-     * @return a list of top three employee names
+     * @return a list of employee names
      * @throws SQLException if an error occurs during database operations
      */
     public List<String> getTopThreeEmployeeNames() throws SQLException {
-        // Precondition: The FuelData table exists in the database
-        // Perform the aggregation to get the total invoice amount by employee name
-        String query = "SELECT employeeName, SUM(CAST(InvoiceAmount AS REAL)) AS totalAmount " +
-                "FROM FuelData JOIN FuelCard ON FuelData.CardNumber = FuelCard.cardNumber " +
-                "GROUP BY employeeName " +
+        List<String> topThreeEmployees = new ArrayList<>();
+
+        String query = "SELECT FuelCard.employeeName, FuelCard.cardNumber, SUM(CAST(FuelData.InvoiceAmount AS REAL)) AS totalAmount " +
+                "FROM FuelCard " +
+                "JOIN FuelData ON FuelCard.cardNumber = FuelData.CardNumber " +
+                "GROUP BY FuelCard.employeeName " +
                 "ORDER BY totalAmount DESC " +
                 "LIMIT 3";
 
@@ -127,16 +128,19 @@ public class DataInserter {
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
 
-            List<String> topThreeEmployeeNames = new ArrayList<>();
             while (resultSet.next()) {
                 String employeeName = resultSet.getString("employeeName");
-                topThreeEmployeeNames.add(employeeName);
-            }
+                String cardNumber = resultSet.getString("cardNumber");
+                double totalAmount = resultSet.getDouble("totalAmount");
 
-            return topThreeEmployeeNames;
+                String employeeInfo = employeeName + " - card number " + cardNumber + " for a total of $" + String.format("%.2f", totalAmount);
+                topThreeEmployees.add(employeeInfo);
+            }
         } catch (SQLException e) {
             throw new SQLException("Error retrieving top three employee names: " + e.getMessage());
         }
+
+        return topThreeEmployees;
     }
 
     /**
@@ -148,4 +152,3 @@ public class DataInserter {
         return successCount;
     }
 }
-
