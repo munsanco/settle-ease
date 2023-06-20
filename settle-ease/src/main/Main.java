@@ -150,7 +150,7 @@ public class Main {
             boolean exitProgram = false;
 
             while (!exitProgram) {
-                System.out.println("Enter the fuel card number ('exit' to quit, 'rank' to sort): ");
+                System.out.println("Enter the fuel card number ('exit' to quit, 'rank' to sort, 'top 3'): ");
                 fuelCardNumber = scanner.nextLine();
 
                 if (fuelCardNumber.equalsIgnoreCase("exit")) {
@@ -172,20 +172,23 @@ public class Main {
                     } catch (SQLException e) {
                         System.out.println("Error retrieving sorted records from FuelData table: " + e.getMessage());
                     }
+                } else if (fuelCardNumber.equalsIgnoreCase("top 3")) {
+                    // Display the top 3 employee names by aggregated invoice amount
+                    try {
+                        List<String> topThreeEmployees = dataInserter[0].getTopThreeEmployeeNames();
+                        System.out.println("Top 3 Employee Names by Aggregated Invoice Amount:");
+                        for (String employeeName : topThreeEmployees) {
+                            System.out.println(employeeName);
+                        }
+                    } catch (SQLException e) {
+                        System.out.println("Error retrieving top 3 employee names: " + e.getMessage());
+                    }
                 } else {
                     // Check if the fuel card number exists
                     boolean cardExists = fuelReport[0].isValidFuelCard(fuelCardNumber);
                     if (!cardExists) {
                         System.out.println("This fuel card number does not exist. Please try again with a valid fuel card number.");
                     } else {
-                        try {
-                            // Retrieve the employee name for the given fuel card number
-                            String employeeName = dataInserter[0].getEmployeeName(fuelCardNumber);
-                            System.out.println("This card belongs to " + employeeName);
-                        } catch (SQLException e) {
-                            System.out.println("Error retrieving employee name: " + e.getMessage());
-                        }
-
                         // Calculate the total fuel spent by fuel card number and state
                         double fuelCardTotalSpent = fuelReport[0].calculateTotalFuelSpent(fuelCardNumber);
 

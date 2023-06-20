@@ -1,8 +1,8 @@
 package main;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class DataInserter {
     private String url;
@@ -21,11 +21,11 @@ public class DataInserter {
     /**
      * Inserts data into the FuelData table.
      *
-     * @param cardNumber     the fuel card number
-     * @param trxDate        the transaction date
-     * @param city           the city
-     * @param state          the state
-     * @param invoiceAmount  the invoice amount
+     * @param cardNumber    the fuel card number
+     * @param trxDate       the transaction date
+     * @param city          the city
+     * @param state         the state
+     * @param invoiceAmount the invoice amount
      * @throws SQLException if an error occurs during database operations
      */
     public void insertData(String cardNumber, String trxDate, String city, String state, String invoiceAmount) throws SQLException {
@@ -83,27 +83,60 @@ public class DataInserter {
     }
 
     /**
-     * Retrieves the employee name associated with the given fuel card number from the FuelCard table.
+     * Retrieves the employee name based on the fuel card number.
      *
-     * @param fuelCardNumber the fuel card number
-     * @return the employee name associated with the fuel card number, or null if not found
+     * @param cardNumber the fuel card number
+     * @return the employee name
      * @throws SQLException if an error occurs during database operations
      */
-    public String getEmployeeName(String fuelCardNumber) throws SQLException {
+    public String getEmployeeName(String cardNumber) throws SQLException {
         String employeeName = null;
         String query = "SELECT employeeName FROM FuelCard WHERE cardNumber = ?";
+
         try (Connection connection = DriverManager.getConnection(url);
              PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, fuelCardNumber);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    employeeName = resultSet.getString("employeeName");
-                }
+            statement.setString(1, cardNumber);
+
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                employeeName = resultSet.getString("employeeName");
             }
         } catch (SQLException e) {
-            throw new SQLException("Error retrieving employee name from FuelCard table: " + e.getMessage());
+            throw new SQLException("Error retrieving employee name: " + e.getMessage());
         }
+
         return employeeName;
+    }
+
+    /**
+     * Retrieves the top three employee names based on aggregated invoice amounts from FuelData.
+     *
+     * @return a list of top three employee names
+     * @throws SQLException if an error occurs during database operations
+     */
+    public List<String> getTopThreeEmployeeNames() throws SQLException {
+        // Precondition: The FuelData table exists in the database
+        // Perform the aggregation to get the total invoice amount by employee name
+        String query = "SELECT employeeName, SUM(CAST(InvoiceAmount AS REAL)) AS totalAmount " +
+                "FROM FuelData JOIN FuelCard ON FuelData.CardNumber = FuelCard.cardNumber " +
+                "GROUP BY employeeName " +
+                "ORDER BY totalAmount DESC " +
+                "LIMIT 3";
+
+        try (Connection connection = DriverManager.getConnection(url);
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
+
+            List<String> topThreeEmployeeNames = new ArrayList<>();
+            while (resultSet.next()) {
+                String employeeName = resultSet.getString("employeeName");
+                topThreeEmployeeNames.add(employeeName);
+            }
+
+            return topThreeEmployeeNames;
+        } catch (SQLException e) {
+            throw new SQLException("Error retrieving top three employee names: " + e.getMessage());
+        }
     }
 
     /**
