@@ -49,11 +49,6 @@ public class Main {
                 }
             }
 
-            System.out.println("Table 'FuelCard' created successfully.");
-            System.out.println("Table 'FuelData' created successfully.");
-            System.out.println("Data inserted successfully.");
-            // Prompt for CSV file path and database file path
-
             // Create an instance of DataInserter and assign it to the dataInserter variable
             dataInserter[0] = new DataInserter(dbFilePath);
             // Trigger the creation of database tables
@@ -299,4 +294,3 @@ public class Main {
         }
     }
 }
-
