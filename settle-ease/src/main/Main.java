@@ -14,6 +14,7 @@ public class Main {
             String csvFile = null;
             final FuelReport[] fuelReport = {null};
             BufferedReader reader = null;
+            final DataInserter[] dataInserter = {null}; // Declare dataInserter as final
 
             // Precondition: The user provides a valid file path as input
             // Important Note: Please update the file path below to match the location of the CSV file on your system
@@ -61,7 +62,7 @@ public class Main {
                     // The method splitRowData is called to extract individual data elements from the line
 
                     if (rowData.length >= 3) {
-                    	// Precondition: If the row data has at least 3 elements, it is considered valid for processing
+                        // Precondition: If the row data has at least 3 elements, it is considered valid for processing
                         String card = rowData[cardIndex];
                         String trxDate = rowData[trxDateIndex];
                         String city = rowData[cityIndex];
@@ -70,15 +71,24 @@ public class Main {
 
                         // Submit a new task to the executorService for concurrent execution
                         executorService.submit(() -> {
-                        	// Save the fuel report data using the extracted values
-                            fuelReport[0].saveFuelReport(card, trxDate, city, state, invoiceAmount);                        
+                            // Save the fuel report data using the extracted values
+                            fuelReport[0].saveFuelReport(card, trxDate, city, state, invoiceAmount);
                             // Print the fuel report information to the console
                             System.out.println("Fuel Card Number: " + card +
                                     ", Transaction Date: " + trxDate +
                                     ", City: " + city +
                                     ", State: " + state +
                                     ", Invoice Amount: " + invoiceAmount);
-                            
+
+                            // Insert the data into the database
+                            boolean insertSuccess = dataInserter[0].insertData(card, trxDate, city, state, invoiceAmount);
+                            if (insertSuccess) {
+                                System.out.println("Data inserted into FuelData table successfully.");
+                            } else {
+                                System.out.println("Error inserting data into FuelData table.");
+                            }
+
+
                         });
                         // Postcondition: A new task is submitted to the executorService
                         // The saveFuelReport method is called with the extracted data, and the information is printed to the console
@@ -118,8 +128,8 @@ public class Main {
             }
 
             if (fuelReport[0] == null) {
-            	 // Precondition: The fuelReport[0] object should not be null
-            	// Checks if there is any data to process in the fuelReport array
+                // Precondition: The fuelReport[0] object should not be null
+                // Checks if there is any data to process in the fuelReport array
                 System.out.println("No data to process. Exiting the program.");
                 return;
             }
@@ -137,8 +147,8 @@ public class Main {
                     System.out.println("Enter db file path to connect to the database: ");
                     String dbFilePath = scanner.nextLine();
 
-                    DatabaseConnector connector = new DatabaseConnector();
-                    connector.connect(dbFilePath);
+                    // Create an instance of DataInserter and assign it to the dataInserter variable
+                    dataInserter[0] = new DataInserter(dbFilePath);
                 } else {
                     // Check if the fuel card number exists
                     boolean cardExists = fuelReport[0].isValidFuelCard(fuelCardNumber);
@@ -160,10 +170,10 @@ public class Main {
                         // Output the overall total fuel spent
                         System.out.printf("Overall Total Fuel Spent: $%.2f%n", fuelCardTotalSpent);
                     }
-                }}}
+                }
             }
-
-            
+        }
+    }
 
     private static int findColumnIndex(String[] header, String columnName) {
         // Precondition: header and columnName are not null
@@ -195,12 +205,12 @@ public class Main {
     }
 
     private static int getOverallRankConcurrently(FuelReport fuelReport, double fuelCardTotalSpent) {
-    	// Precondition: The fuelReport object and fuelCardTotalSpent are not null
-    	// Group the fuel rows by fuel card and calculate the total fuel spent by each card
-    	Map<String, Double> totalFuelSpentByFuelCard = fuelReport.getFuelRows().stream()
+        // Precondition: The fuelReport object and fuelCardTotalSpent are not null
+        // Group the fuel rows by fuel card and calculate the total fuel spent by each card
+        Map<String, Double> totalFuelSpentByFuelCard = fuelReport.getFuelRows().stream()
                 .collect(Collectors.groupingBy(FuelRow::getCard,
                         Collectors.summingDouble(row -> Double.parseDouble(row.getInvoiceAmount()))));
-    					// Postcondition: The totalFuelSpentByFuelCard map contains the total fuel spent for each fuel card
+        // Postcondition: The totalFuelSpentByFuelCard map contains the total fuel spent for each fuel card
         List<Double> totalFuelSpentValues = new ArrayList<>(totalFuelSpentByFuelCard.values());
         // Postcondition: The totalFuelSpentValues list contains the total fuel spent values for each fuel card
         // Concurrent sorting of totalFuelSpentValues
@@ -214,7 +224,7 @@ public class Main {
     }
 
     private static String getRankSuffix(int rank) {
-    	// Precondition: The rank is a positive integer
+        // Precondition: The rank is a positive integer
         if (rank == 1) {
             return "st";
         } else if (rank == 2) {
@@ -225,5 +235,5 @@ public class Main {
             return "th";
         }
     }
-    	// Postcondition: The suffix string corresponding to the rank is returned
+    // Postcondition: The suffix string corresponding to the rank is returned
 }

@@ -1,4 +1,3 @@
-package main;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,8 +13,7 @@ public class CreateDatabaseTable {
 
             String fuelCard = "CREATE TABLE IF NOT EXISTS FuelCard (" +
                     "id INTEGER PRIMARY KEY," +
-                    "cardNumber TEXT," +
-                    "employeeName TEXT" +
+                    "cardNumber TEXT" +
                     ");";
 
             stmt.execute(fuelCard);

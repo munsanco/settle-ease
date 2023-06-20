@@ -1,4 +1,5 @@
 package main;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -7,27 +8,28 @@ import java.sql.Statement;
 public class DatabaseTableDeletion {
     public static void main(String[] args) {
         // Database connection parameters
-        String url = "jdbc:sqlite:/Users/mundosanchez/GitHub/settle-ease/settle-ease/src/test/resources/FuelData.db";
+        String dbFilePath = "/Users/mundosanchez/GitHub/settle-ease/settle-ease/src/test/resources/FuelData.db";
 
-        // Table name to delete
-        String tableName = "FuelData";
+        // Table names to delete
+        String[] tableNames = {"FuelData", "FuelCard"};
 
         try {
             // Connect to the database
-            Connection connection = DriverManager.getConnection(url);
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:" + dbFilePath);
 
             // Create a statement
             Statement statement = connection.createStatement();
 
-            // Delete the table
-            String deleteTableQuery = "DROP TABLE IF EXISTS " + tableName;
-            statement.execute(deleteTableQuery);
+            // Delete the tables
+            for (String tableName : tableNames) {
+                String deleteTableQuery = "DROP TABLE IF EXISTS " + tableName;
+                statement.execute(deleteTableQuery);
+                System.out.println("Table " + tableName + " deleted successfully.");
+            }
 
             // Close the resources
             statement.close();
             connection.close();
-
-            System.out.println("Table " + tableName + " deleted successfully.");
         } catch (SQLException e) {
             e.printStackTrace();
         }

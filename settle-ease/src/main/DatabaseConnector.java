@@ -15,7 +15,7 @@ public class DatabaseConnector {
             Connection connection = DriverManager.getConnection("jdbc:sqlite:" + filePath);
             
             // Print a success message if the connection is successful
-            System.out.println("Connected to the database!");
+            System.out.println("You are now connected to the database!");
 
             // Close the connection
             connection.close();
