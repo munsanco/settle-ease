@@ -44,8 +44,8 @@ This week our core deliverables focused on turning SettleEase into a practical a
 ## <a id="installation"></a>Installation
 
 1. Download code base from Github repository.
-2. You will need to locate your local file path for where the CSV file is saved at. This path will look like this [your local path]/settle-ease/src/test/resources/TR123325.csv
-3.You will need to locate your local file path for where the database file is save at. This path will look like this  [your local path]/settle-ease/settle-ease/src/test/resources/FuelData.db. Please note that adding jdbc:sqlite: in front of the db file path will result in an incorrect path, as this is added in for the user automatically within the code.
+2. You will need to locate your local file path for where the CSV file is saved at. This path will look like this [your local path]/settle-ease/src/test/resources/TR123325.csv.
+3. You will need to locate your local file path for where the database file is save at. This path will look like this  [your local path]/settle-ease/settle-ease/src/test/resources/FuelData.db. Please note that adding jdbc:sqlite: in front of the db file path will result in an incorrect path, as this is added in for the user automatically within the code.
 4. Run program
 5. You will be prompted to enter the csv file path (refer to step 2).
 6. You will be prompted to enter the database file path (refer to step 3).
