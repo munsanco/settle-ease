@@ -16,25 +16,28 @@ SettleEase is a microservice designed to automate payroll fuel deductions for co
 
 As SettleEase is uniquely tailored to be a project that is built up each week, this section highlights the key accomplishments for the week: 
 
-This week our core deliverables focused on implementing the use of concurrency. A key feature that is also introduced this week is the ability to return the overall rank for a specified fuel card number based upon its total spend. We demonstrate the use of concurrency by refactoring the way that the csv file is processed, switching over to a concurrent method as opposed to processing each row one at a time. Additionally, we are also using concurrency in the actual retrieval of the fuel card ranking to provide a more optimized search that is a better use of resources, especially when large datasets are introduced.
+This week our core deliverables focused on turning SettleEase into a practical application through a database implementation. Several key features were introduced that start with allowing the user to enter in a file path for a database immediately after inputting a valid csv file path. This will establish a connection to the database, allowing SettleEase to process the csv provided data and create an Employee table that is then used to provide value to the user by allowing sorting, ranking, and returning top 3 fuel providers. Upon exiting, we are providing a valuable feature in deleting all the tables and data to provide for a fresh restart experience upon the start of the program.
 
 
 ## <a id="features"></a>Features
 
 | Feature | Description |
 |---------|-------------|
-| User Input of File Path | User is prompted to enter in a local file path to begin the SettleEase parsing of data |
+| User Input of CSV File Path | User is prompted to enter in a local file path to begin the SettleEase parsing of data |
+| User Input of Database File Path | After valid CSV file path, User is prompted to enter in a local database file path to connect to the database. |
 | Report Creation | Once valid file is received we save the file to a Report |
 | Exceptions Handling | If file path is unreadable or does not exist an exception is thrown for user feedback and resource closing |
 | Data Parsing | We parse the CSV file concurrently contents to return specific categories |
 | Column Splitting | We take unstructured data and split data into columns to extract desired categories |
 | Report Saving | We save the row data contents to the Report object |
 | Report ID Confirmation | We ensure that the appropriate Report ID is saved to the report with processed data |
-| User Input of Fuel Card No. | User is prompted to enter in fuel card number and SettlEase will return the fuel card number total if valid |
-| Fuel Card Total Breakdown | Fuel card total breakdown by state is returned to the console, also with an overall total for the fuel card.|
-| Fuel Card Ranking | Along with the fuel card total, an overall rank is provided relative to the total spent for each specified fuel card number.|
-| Repeating Fuel Card No. | User is prompted to enter in a new fuel card number and SettlEase will return the fuel card number total if valid |
-| Exit Program | User is prompted to enter in 'exit' at any time after the fuel card input has been made to close the program. |
+| Table Creation | While SettleEase is processing, we are also creating two database tables, one being the FuelCard for employee information and the other being the dynamic csv content for FuelData |
+| Table Inserting | Valid csv file contents are to be inserted into the database with the Tables getting updated for later use of retrieval operations. |
+| User Choices | SettleEase prompts the user to choose between entering a fuel card number, retrieving a descending order of transactions, returning the top 3 fuel spenders by employee name, or exiting the program. |
+| User Input of Fuel Card No. | If user enters in fuel card number SettlEase will return the fuel card number total and state breakdown, along with individual card ranking. |
+| Rank | If user enters 'rank' SettleEase shall sort transactions in descending order returning to the console.|
+| Top 3 | If user enters 'top 3' SettlEase shall provide the top three fuel spenders by total and employee name.|
+| Exit Program | User is prompted to enter in 'exit' at any time. By doing so, SettleEase shall delete the existing tables and its content, allowing for clean user experience in restarting the program. |
 
 
 
@@ -42,23 +45,25 @@ This week our core deliverables focused on implementing the use of concurrency. 
 
 1. Download code base from Github repository.
 2. You will need to locate your local file path for where the CSV file is saved at. This path will look like this [your local path]/settle-ease/src/test/resources/TR123325.csv
-3. Run program
-4. You will be prompted to enter the file path (refer to step 2).
-5. Once the correct file path is entered, SettleEase will process the CSV contenst and the results will be rendered to the Console with the Report ID.
-6. SettleEase 
-7. Once processed, SettleEase will prompt you to enter in a Fuel Card number. A valid Fuel Card number to use for testing is "012". Card number "012" is the only fuel card number in this file with multiple states available for a breakdown. An invalid Fuel Card number to use for testing is "069".
+3.You will need to locate your local file path for where the database file is save at. This path will look like this  [your local path]/settle-ease/settle-ease/src/test/resources/FuelData.db. Please note that adding jdbc:sqlite: in front of the db file path will result in an incorrect path, as this is added in for the user automatically within the code.
+4. Run program
+5. You will be prompted to enter the csv file path (refer to step 2).
+6. You will be prompted to enter the database file path (refer to step 3).
+7. Once the correct file path is entered, SettleEase will process the CSV contenst and connect to the appropriate database and the results will be rendered to the Console with the Report ID.
+8. SettleEase will prompt the user with several options between entering a fuel card number, sorting transactions with 'rank', returning the top 3 fuel spenders, or exiting the program.
+9. A valid Fuel Card number to use for testing is "012". Card number "012" is the only fuel card number in this file with multiple states available for a breakdown. An invalid Fuel Card number to use for testing is "069". Card number "012" can also be used to test the aggregating feature that is returned with the top 3 as this card has multiple transactions in the csv file that are added up.
 
 
 ## <a id="usage"></a>Usage
 Below are the instructions for running this application assuming you have successfully followed the Installation steps:
 
 1. Run program with local IDE (Eclipse).
-2. You will be prompted to enter the file path (refer to step 2 of Installation).
-3. Once the correct file path is entered, SettleEase will process the CSV contenst and the results will be rendered to the Console with the Report ID.
-4. SettleEase shall prompt you to enter in a Fuel Card number.
-5. If valid, SettleEase shall return to you the total spend for specified Fuel Card number.
-6. SettleEase will prompt you to enter in a new fuel card number whether input is valid or not, also allowing the user to 'exit' the program.
-7. After 'exit' the program successfully terminates.
+2. You will be prompted to enter the csv file path (refer to step 2 of Installation).
+3. You will be prompted to enter the database file path (refer to step 3 of Installation).
+4. Once the correct file path is entered, SettleEase will process the CSV contenst, connect to the database and results will be rendered to the Console with the Report ID.
+5. SettleEase shall prompt the User several options to choose from (enter fuel card number, rank to sort transactions, top 3 to return to three fuel spenders, and ability to exit).
+6. With each selected option SettleEase will return the desired output, with connection to the database.
+8. After 'exit' the program successfully terminates and will delete the tables and contents from the database to allow for a fresh restart of the program upon next use.
 
 
 ## <a id="contributing"></a>Contributing
