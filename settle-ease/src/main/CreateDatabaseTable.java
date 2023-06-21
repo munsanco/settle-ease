@@ -7,6 +7,7 @@ import java.sql.Statement;
 
 public class CreateDatabaseTable {
     public static void createDatabaseTables(String dbFilePath) {
+    	// Precondition: dbFilePath is a valid file path for the SQLite database
         String url = "jdbc:sqlite:" + dbFilePath;
 
         try (Connection conn = DriverManager.getConnection(url);
@@ -19,6 +20,7 @@ public class CreateDatabaseTable {
                     ");";
 
             stmt.execute(fuelCard);
+            // Postcondition: The 'FuelCard' table is created successfully in the database
 
             System.out.println("Table 'FuelCard' created successfully.");
 
@@ -34,7 +36,8 @@ public class CreateDatabaseTable {
                     ");";
 
             stmt.execute(fuelData);
-
+            // Postcondition: The 'FuelData' table is created successfully in the database
+            
             System.out.println("Table 'FuelData' created successfully.");
 
         } catch (SQLException e) {

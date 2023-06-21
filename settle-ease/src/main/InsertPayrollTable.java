@@ -3,6 +3,7 @@ import java.sql.*;
 
 
 public class InsertPayrollTable {
+	// Inserts data into the FuelCard table.
     public static void insertDataIntoFuelCardTable(String dbFilePath) {
         try (Connection conn = getConnection(dbFilePath);
              Statement stmt = conn.createStatement()) {
@@ -46,12 +47,19 @@ public class InsertPayrollTable {
             System.out.println("Error: " + e.getMessage());
         }
     }
-
+    // Retrieves a connection to the database.
     private static Connection getConnection(String dbFilePath) throws SQLException {
         String url = "jdbc:sqlite:" + dbFilePath;
         return DriverManager.getConnection(url);
     }
-
+    /**
+     * Inserts a single data row into the FuelCard table.
+     *
+     * @param stmt         the SQL statement object
+     * @param cardNumber   the fuel card number
+     * @param employeeName the employee name
+     * @throws SQLException if an error occurs during database operations
+     */
     private static void insertData(Statement stmt, String cardNumber, String employeeName) throws SQLException {
         String insertQuery = "INSERT INTO FuelCard (cardNumber, employeeName) " +
                 "VALUES ('" + cardNumber + "', '" + employeeName + "')";

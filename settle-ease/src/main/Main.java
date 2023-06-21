@@ -19,6 +19,7 @@ public class Main {
             final DataInserter[] dataInserter = {null}; // Declare dataInserter as final
 
             // Precondition: The user provides a valid file path as input
+            // You will need to change your file path. An example I use is: /Users/mundosanchez/GitHub/settle-ease/settle-ease/src/test/resources/TR123325.csv
             boolean validCsvPath = false;
             while (!validCsvPath) {
                 System.out.println("Enter the file path: ");
@@ -34,6 +35,7 @@ public class Main {
             }
 
             // Precondition: The user provides a valid database file path as input
+            // You will need to provide a valid db path. It should look something like this: /Users/mundosanchez/GitHub/settle-ease/settle-ease/src/test/resources/FuelData.db
             boolean validDbPath = false;
             String dbFilePath = null;
             while (!validDbPath) {

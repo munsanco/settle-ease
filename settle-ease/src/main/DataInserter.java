@@ -31,14 +31,17 @@ public class DataInserter {
         // Precondition: cardNumber, trxDate, city, state, and invoiceAmount are not null
         String query = "INSERT INTO FuelData (CardNumber, TrxDate, City, State, InvoiceAmount) VALUES (?, ?, ?, ?, ?)";
 
+
         try (Connection connection = DriverManager.getConnection(url);
              PreparedStatement statement = connection.prepareStatement(query)) {
+        	// Set the parameter values
             statement.setString(1, cardNumber);
             statement.setString(2, trxDate);
             statement.setString(3, city);
             statement.setString(4, state);
             statement.setString(5, invoiceAmount);
 
+            // Execute the query and get the number of rows inserted
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
                 successCount += rowsInserted;
@@ -56,14 +59,15 @@ public class DataInserter {
      */
     public List<FuelRow> getSortedFuelData() throws SQLException {
         // Postcondition: returns a list of FuelRow objects in descending order of invoice amount
-        List<FuelRow> sortedRecords = new ArrayList<>();
-
+    	// Create an empty list to store the sorted fuel data
+    	List<FuelRow> sortedRecords = new ArrayList<>();
+    	 // Prepare the SQL query
         String query = "SELECT * FROM FuelData ORDER BY CAST(InvoiceAmount AS REAL) DESC";
 
         try (Connection connection = DriverManager.getConnection(url);
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
-
+        	// Iterate over the result set and create FuelRow objects
             while (resultSet.next()) {
                 String cardNumber = resultSet.getString("CardNumber");
                 String trxDate = resultSet.getString("TrxDate");
@@ -89,14 +93,16 @@ public class DataInserter {
      * @throws SQLException if an error occurs during database operations
      */
     public String getEmployeeName(String fuelCardNumber) throws SQLException {
-        String employeeName = null;
-
+    	// Precondition: fuelCardNumber is not null
+    	String employeeName = null;
+    	// Prepare the SQL query
         String query = "SELECT employeeName FROM FuelCard WHERE cardNumber = ?";
 
         try (Connection connection = DriverManager.getConnection(url);
              PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, fuelCardNumber);
-
+        	// Set the parameter value
+        	statement.setString(1, fuelCardNumber);
+        	// Execute the query and retrieve the result set
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 employeeName = resultSet.getString("employeeName");
@@ -115,8 +121,10 @@ public class DataInserter {
      * @throws SQLException if an error occurs during database operations
      */
     public List<String> getTopThreeEmployeeNames() throws SQLException {
-        List<String> topThreeEmployees = new ArrayList<>();
-
+    	// Postcondition: returns a list of employee names representing the top three by aggregated invoice amount
+    	// Create an empty list to store the top three employee names
+    	List<String> topThreeEmployees = new ArrayList<>();
+    	// Prepare the SQL query
         String query = "SELECT FuelCard.employeeName, FuelCard.cardNumber, SUM(CAST(FuelData.InvoiceAmount AS REAL)) AS totalAmount " +
                 "FROM FuelCard " +
                 "JOIN FuelData ON FuelCard.cardNumber = FuelData.CardNumber " +
@@ -127,7 +135,7 @@ public class DataInserter {
         try (Connection connection = DriverManager.getConnection(url);
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
-
+        	// Iterate over the result set and create employee name strings
             while (resultSet.next()) {
                 String employeeName = resultSet.getString("employeeName");
                 String cardNumber = resultSet.getString("cardNumber");
